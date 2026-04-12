@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Plastic Kitchen Lab</title>
+    <style>
+        :root {
+            --bg: #fdf6f0;
+            --card: #ffffff;
+            --primary: #a8dadc;
+            --accent: #ffb7b2;
+            --text: #4a4e69;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .lab-card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 1.5rem; color: #6d6875; }
+
+        .slider-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .visualizer {
+            height: 120px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 2px dashed #e9ecef;
+        }
+
+        #material-sample {
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .stats {
+            background: #f1f8f9;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .stat-line span { font-weight: bold; color: #1d3557; }
+    </style>
+</head>
+<body>
+
+<div class="lab-card">
+    <h1>🌱 Bio-Lab Sandbox</h1>
+    
+    <div class="visualizer">
+        <div id="material-sample"></div>
+    </div>
+
+    <div class="slider-group">
+        <label>Starch (Base Polymer)</label>
+        <input type="range" id="starch" min="0" max="100" value="50">
+    </div>
+
+    <div class="slider-group">
+        <label>Glycerin (Plasticizer)</label>
+        <input type="range" id="glycerin" min="0" max="100" value="20">
+    </div>
+
+    <div class="slider-group">
+        <label>Vinegar (Catalyst)</label>
+        <input type="range" id="vinegar" min="0" max="100" value="30">
+    </div>
+
+    <div class="stats">
+        <div class="stat-line">Elasticity: <span id="elasticity-val">0.2</span></div>
+        <div class="stat-line">Brittleness: <span id="brittleness-val">0.1</span></div>
+        <div class="stat-line">Status: <span id="status-msg">Liquid Mix</span></div>
+    </div>
+</div>
+
+<script>
+    const starchInput = document.getElementById('starch');
+    const glycerinInput = document.getElementById('glycerin');
+    const vinegarInput = document.getElementById('vinegar');
+    
+    const sample = document.getElementById('material-sample');
+    const elasticDisp = document.getElementById('elasticity-val');
+    const brittleDisp = document.getElementById('brittleness-val');
+    const statusMsg = document.getElementById('status-msg');
+
+    function updateMaterial() {
+        // 1. Create the Material Object
+        let Material = {
+            starch: parseInt(starchInput.value),
+            glycerin: parseInt(glycerinInput.value),
+            vinegar: parseInt(vinegarInput.value),
+            elasticity: 0.1,
+            brittleness: 0.1
+        };
+
+        // 2. Apply the Logic
+        if (Material.glycerin > 50) {
+            Material.elasticity = 0.8;
+            statusMsg.innerText = "Super Stretchy!";
+        } else {
+            statusMsg.innerText = "Standard Film";
+        }
+
+        if (Material.starch > 80) {
+            Material.brittleness = 0.9;
+            statusMsg.innerText = "Very Brittle/Hard";
+        }
+
+        // 3. Update the Visuals
+        elasticDisp.innerText = Material.elasticity;
+        brittleDisp.innerText = Material.brittleness;
+
+        // Visual change: High glycerin makes it wider (elastic), high starch makes it darker (dense)
+        sample.style.width = (60 + (Material.elasticity * 50)) + "px";
+        sample.style.opacity = 0.3 + (Material.starch / 100);
+        sample.style.borderRadius = (Material.elasticity * 50) + "px";
+    }
+
+    // Listen for slider movements
+    [starchInput, glycerinInput, vinegarInput].forEach(input => {
+        input.addEventListener('input', updateMaterial);
+    });
+
+    // Initialize
+    updateMaterial();
+</script>
+
+</body>
+</html>
