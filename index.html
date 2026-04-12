@@ -42,114 +42,109 @@
 </div>
 
 <script>
-    // --- MATTER.JS SETUP ---
-    const { Engine, Render, Runner, World, Bodies, MouseConstraint, Mouse, Composite, Constraint } = Matter;
+// --- MATTER.JS SETUP ---
+const { Engine, Render, Runner, World, Bodies, MouseConstraint, Mouse, Composite, Constraint } = Matter;
+
+const container = document.getElementById('canvas-container');
+const engine = Engine.create();
+
+// FIX 1: Turn off gravity so the block doesn't fall down
+engine.world.gravity.y = 0;
+
+const render = Render.create({
+    element: container,
+    engine: engine,
+    options: {
+        width: 450,
+        height: 250,
+        wireframes: false,
+        background: 'transparent'
+    }
+});
+
+// Create the "Bioplastic" Block - centered
+let plastic = Bodies.rectangle(250, 125, 100, 40, { 
+    render: { fillStyle: '#ffb7b2' },
+    frictionAir: 0.1
+});
+
+// Anchor it to a fixed point on the left
+let anchor = Constraint.create({
+    pointA: { x: 100, y: 125 },
+    bodyB: plastic,
+    pointB: { x: -50, y: 0 },
+    stiffness: 0.05,
+    render: { strokeStyle: '#cbd5e0', lineWidth: 3 }
+});
+
+// Mouse control
+const mouse = Mouse.create(render.canvas);
+const mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: { stiffness: 0.1, render: { visible: false } }
+});
+
+World.add(engine.world, [plastic, anchor, mouseConstraint]);
+Render.run(render);
+Runner.run(Runner.create(), engine);
+
+// --- LOGIC & INPUTS ---
+const starchInput = document.getElementById('starch');
+const glycerinInput = document.getElementById('glycerin');
+
+let isSnapped = false;
+
+function updateLogic() {
+    const starch = parseInt(starchInput.value);
+    const glycerin = parseInt(glycerinInput.value);
     
-    const container = document.getElementById('canvas-container');
-    const engine = Engine.create();
-    const render = Render.create({
-        element: container,
-        engine: engine,
-        options: {
-            width: 450,
-            height: 250,
-            wireframes: false,
-            background: 'transparent'
-        }
-    });
-
-    // Create the "Bioplastic" Block
-    let plastic = Bodies.rectangle(225, 125, 100, 40, { 
-        render: { fillStyle: '#ffb7b2' },
-        frictionAir: 0.05
-    });
-
-    // Anchor it to the left side so it stretches
-    let anchor = Constraint.create({
-        pointA: { x: 100, y: 125 },
-        bodyB: plastic,
-        pointB: { x: -50, y: 0 },
-        stiffness: 0.1,
-        render: { strokeStyle: '#dfdfdf', lineWidth: 2 }
-    });
-
-    // Mouse control
-    const mouse = Mouse.create(render.canvas);
-    const mouseConstraint = MouseConstraint.create(engine, {
-        mouse: mouse,
-        constraint: { stiffness: 0.2, render: { visible: false } }
-    });
-
-    World.add(engine.world, [plastic, anchor, mouseConstraint]);
-    Render.run(render);
-    Runner.run(Runner.create(), engine);
-
-    // --- LOGIC & INPUTS ---
-    const starchInput = document.getElementById('starch');
-    const glycerinInput = document.getElementById('glycerin');
+    // Adjusting stiffness based on glycerin (plasticizer makes it more flexible/loose)
+    anchor.stiffness = 0.5 / (glycerin / 5); 
     
-    let isSnapped = false;
+    document.getElementById('elasticity-val').innerText = (glycerin / 100).toFixed(2);
+    document.getElementById('strength-val').innerText = starch;
 
-    function updateLogic() {
-        const starch = parseInt(starchInput.value);
-        const glycerin = parseInt(glycerinInput.value);
-        
-        // Relationship: Glycerin increases stretch (stiffness lowered)
-        // Starch increases max tensile strength
-        anchor.stiffness = 0.5 / (glycerin / 10);
-        document.getElementById('elasticity-val').innerText = (glycerin / 100).toFixed(2);
-        document.getElementById('strength-val').innerText = starch;
+    // Reset if they change sliders so they can try again
+    if (isSnapped) resetPlastic();
+}
 
-        // Reset if they change sliders
-        if (isSnapped) resetPlastic();
+function resetPlastic() {
+    World.remove(engine.world, plastic);
+    // Spawn in the middle
+    plastic = Bodies.rectangle(250, 125, 100, 40, { render: { fillStyle: '#ffb7b2' } });
+    anchor.bodyB = plastic;
+    World.add(engine.world, plastic);
+    isSnapped = false;
+}
+
+// Checking for the break
+Matter.Events.on(engine, 'afterUpdate', function() {
+    if (isSnapped || !anchor.bodyB) return;
+
+    const distance = Math.sqrt(
+        Math.pow(plastic.position.x - anchor.pointA.x, 2) + 
+        Math.pow(plastic.position.y - anchor.pointA.y, 2)
+    );
+
+    // FIX 2: Better threshold math
+    // Starch increases the "max length" it can reach
+    const maxLength = 100 + (parseInt(starchInput.value) * 1.5);
+
+    if (distance > maxLength) {
+        snap();
     }
+});
 
-    function resetPlastic() {
-        World.remove(engine.world, plastic);
-        plastic = Bodies.rectangle(225, 125, 100, 40, { render: { fillStyle: '#ffb7b2' } });
-        anchor.bodyB = plastic;
-        World.add(engine.world, plastic);
-        isSnapped = false;
-    }
+function snap() {
+    isSnapped = true;
+    anchor.bodyB = null; 
+    
+    // Simple alert - you can replace this with a "Restart" button later!
+    console.log("SNAP!");
+}
 
-    // The Stress Test Function
-    Matter.Events.on(engine, 'afterUpdate', function() {
-        if (isSnapped) return;
-
-        // Calculate how far the plastic has been pulled from the anchor
-        const distance = Math.sqrt(
-            Math.pow(plastic.position.x - anchor.pointA.x, 2) + 
-            Math.pow(plastic.position.y - anchor.pointA.y, 2)
-        );
-
-        const maxStrength = parseInt(starchInput.value) + 50; // Threshold
-
-        if (distance > maxStrength) {
-            snap();
-        }
-    });
-
-    function snap() {
-        isSnapped = true;
-        anchor.bodyB = null; // Break the connection!
-        
-        // Play Snap Sound (Using Browser Synthesis since we don't have an mp3 file)
-        const osc = engine.world.context ? null : new (window.AudioContext || window.webkitAudioContext)();
-        if (osc) {
-            const o = osc.createOscillator();
-            const g = osc.createGain();
-            o.connect(g);
-            g.connect(osc.destination);
-            o.start(0);
-            g.gain.exponentialRampToValueAtTime(0.00001, osc.currentTime + 0.1);
-            o.stop(osc.currentTime + 0.1);
-        }
-        
-        alert("Snap! The tensile strength was exceeded.");
-    }
-
-    [starchInput, glycerinInput].forEach(i => i.addEventListener('input', updateLogic));
-    updateLogic();
+[starchInput, glycerinInput].forEach(i => i.addEventListener('input', updateLogic));
+updateLogic();
 </script>
 
 </body>
