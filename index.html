@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bioplastics Kitchen Lab | Interactive Educational Tool</title>
-    
-    <!-- Matter.js Physics Engine -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <title>🧸 Bioplastics Bakery | Cute Science Lab</title>
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -16,70 +15,83 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f3e6 50%, #fff0f5 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #fff;
-            overflow-x: hidden;
+            color: #6b5b7b;
         }
 
-        .lab-container {
+        .bakery-container {
             max-width: 1400px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(20px);
-            border-radius: 40px;
-            padding: 30px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(213, 184, 255, 0.15),
+                        0 5px 20px rgba(255, 218, 233, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.8);
         }
 
         h1 {
-            font-weight: 300;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 2.8rem;
+            margin-bottom: 5px;
             letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+            background: linear-gradient(135deg, #b8a9d6, #f7b2c4, #a8d8ea);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h1 span {
+            font-size: 2.5rem;
         }
 
         .subtitle {
-            color: rgba(255, 255, 255, 0.6);
+            color: #b8a9c4;
             margin-bottom: 30px;
-            font-weight: 300;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding-left: 10px;
         }
 
         .main-grid {
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 360px 1fr;
             gap: 30px;
         }
 
-        /* SLIDERS PANEL */
+        /* INGREDIENTS PANEL - CUTE PASTEL STYLE */
         .ingredients-panel {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(255, 248, 240, 0.9), rgba(255, 245, 245, 0.9));
+            border-radius: 40px;
             padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 220, 240, 0.6);
+            box-shadow: 0 10px 30px rgba(200, 180, 220, 0.1);
         }
 
         .ingredient-card {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
+            background: white;
+            border-radius: 25px;
             transition: all 0.3s ease;
+            border: 2px solid rgba(255, 200, 220, 0.3);
+            box-shadow: 0 5px 15px rgba(213, 184, 255, 0.1);
         }
 
         .ingredient-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
+            border-color: rgba(255, 182, 193, 0.5);
         }
 
         .ingredient-header {
@@ -92,98 +104,120 @@
         .ingredient-name {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 10px;
+            width: 45px;
+            height: 45px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 24px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
         }
 
-        .starch-icon { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); }
-        .glycerin-icon { background: linear-gradient(135deg, #81ecec, #00cec9); }
-        .vinegar-icon { background: linear-gradient(135deg, #ff7675, #d63031); }
+        .starch-icon { 
+            background: linear-gradient(135deg, #ffe5b4, #ffd4a8); 
+            border: 2px solid #ffd4a8;
+        }
+        .glycerin-icon { 
+            background: linear-gradient(135deg, #c5e8f7, #b8dff0); 
+            border: 2px solid #b8dff0;
+        }
+        .vinegar-icon { 
+            background: linear-gradient(135deg, #ffd4d4, #ffc4c4); 
+            border: 2px solid #ffc4c4;
+        }
+
+        .ingredient-name span {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #7b6b8a;
+        }
 
         .value-display {
-            font-size: 24px;
-            font-weight: 300;
-            color: #fff;
+            font-size: 28px;
+            font-weight: 600;
+            color: #9b8baa;
         }
 
         .unit {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            color: #c4b5d4;
+            margin-left: 3px;
         }
 
         input[type="range"] {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            height: 8px;
+            background: linear-gradient(90deg, #ffe5b4, #c5e8f7, #ffd4d4);
+            border-radius: 20px;
             outline: none;
             -webkit-appearance: none;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border: 3px solid white;
             transition: all 0.2s;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
-        #starch-slider::-webkit-slider-thumb { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); }
-        #glycerin-slider::-webkit-slider-thumb { background: linear-gradient(135deg, #81ecec, #00cec9); }
-        #vinegar-slider::-webkit-slider-thumb { background: linear-gradient(135deg, #ff7675, #d63031); }
+        #starch-slider::-webkit-slider-thumb { background: #ffd4a8; }
+        #glycerin-slider::-webkit-slider-thumb { background: #b8dff0; }
+        #vinegar-slider::-webkit-slider-thumb { background: #ffc4c4; }
 
         .cook-btn {
             width: 100%;
             padding: 18px;
-            background: linear-gradient(135deg, #a8e6cf, #78c7b0);
+            background: linear-gradient(135deg, #d4b8d9, #f7b2c4);
             border: none;
-            border-radius: 20px;
-            color: #1a1a2e;
-            font-size: 18px;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 10px;
-            box-shadow: 0 10px 30px -5px rgba(168, 230, 207, 0.3);
+            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(213, 184, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            font-family: 'Quicksand', sans-serif;
         }
 
         .cook-btn:hover {
             transform: scale(1.02);
-            box-shadow: 0 15px 40px -5px rgba(168, 230, 207, 0.4);
+            box-shadow: 0 12px 30px rgba(255, 182, 193, 0.4);
         }
 
         .cook-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
 
         .reset-btn {
             width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            color: #fff;
-            font-size: 14px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(213, 184, 255, 0.3);
+            border-radius: 25px;
+            color: #9b8baa;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 10px;
+            margin-top: 12px;
+            font-family: 'Quicksand', sans-serif;
         }
 
         .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: white;
+            border-color: #d4b8d9;
         }
 
         /* LAB BENCH */
@@ -194,23 +228,30 @@
         }
 
         .animation-area {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 30px;
-            padding: 20px;
-            min-height: 400px;
+            background: linear-gradient(135deg, rgba(255, 250, 240, 0.9), rgba(255, 245, 250, 0.9));
+            border-radius: 40px;
+            padding: 25px;
+            min-height: 450px;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 3px solid rgba(255, 220, 240, 0.5);
+            box-shadow: inset 0 5px 20px rgba(213, 184, 255, 0.1),
+                        0 10px 30px rgba(200, 180, 220, 0.1);
         }
 
-        #physics-canvas {
+        #main-canvas {
             width: 100%;
             height: 400px;
             display: block;
-            border-radius: 20px;
-            background: radial-gradient(circle at 50% 30%, rgba(168, 230, 207, 0.1), transparent);
+            border-radius: 30px;
+            cursor: grab;
         }
 
+        #main-canvas:active {
+            cursor: grabbing;
+        }
+
+        /* PROPERTIES PANEL */
         .properties-panel {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -218,32 +259,34 @@
         }
 
         .property-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px;
-            padding: 20px;
+            background: white;
+            border-radius: 25px;
+            padding: 18px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
+            border: 2px solid rgba(255, 200, 220, 0.4);
+            box-shadow: 0 5px 15px rgba(213, 184, 255, 0.1);
         }
 
         .property-label {
-            color: rgba(255, 255, 255, 0.5);
+            color: #b8a9c4;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .property-value {
-            font-size: 28px;
-            font-weight: 300;
+            font-size: 32px;
+            font-weight: 600;
             margin-bottom: 10px;
+            color: #7b6b8a;
         }
 
         .property-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
+            height: 6px;
+            background: #f0e6f5;
+            border-radius: 10px;
             overflow: hidden;
         }
 
@@ -251,51 +294,53 @@
             height: 100%;
             width: 0%;
             transition: width 0.3s;
-            border-radius: 2px;
+            border-radius: 10px;
         }
 
-        .stiffness-fill { background: linear-gradient(90deg, #ffeaa7, #fdcb6e); }
-        .elasticity-fill { background: linear-gradient(90deg, #81ecec, #00cec9); }
-        .tear-fill { background: linear-gradient(90deg, #ff7675, #d63031); }
-        .bio-fill { background: linear-gradient(90deg, #a8e6cf, #55efc4); }
+        .stiffness-fill { background: linear-gradient(90deg, #ffe5b4, #ffd4a8); }
+        .elasticity-fill { background: linear-gradient(90deg, #c5e8f7, #a8d8ea); }
+        .tear-fill { background: linear-gradient(90deg, #ffd4d4, #ffb3b3); }
+        .bio-fill { background: linear-gradient(90deg, #d4b8d9, #c4a8d9); }
 
         /* STRETCH METER */
         .stretch-container {
             margin-top: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 30px;
+            border: 2px solid rgba(255, 200, 220, 0.4);
         }
 
         .stretch-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
+            margin-bottom: 12px;
+            color: #9b8baa;
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .stretch-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            height: 12px;
+            background: #f0e6f5;
+            border-radius: 20px;
             overflow: hidden;
         }
 
         #stretch-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #a8e6cf, #ffeaa7, #ff7675);
+            background: linear-gradient(90deg, #a8e6cf, #ffd4a8, #ffb3b3);
             transition: width 0.05s;
-            border-radius: 4px;
+            border-radius: 20px;
         }
 
         .instructions {
             margin-top: 15px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 13px;
+            color: #b8a9c4;
+            font-size: 0.9rem;
             text-align: center;
-            line-height: 1.5;
+            font-weight: 500;
         }
 
         .snap-indicator {
@@ -303,18 +348,56 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 100px;
-            font-weight: bold;
-            color: #ff7675;
-            text-shadow: 0 0 50px rgba(255, 118, 117, 0.8);
+            font-size: 120px;
+            font-weight: 700;
+            color: #ffb3b3;
+            text-shadow: 0 0 40px rgba(255, 180, 180, 0.6);
             opacity: 0;
             pointer-events: none;
             z-index: 1000;
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(213, 184, 255, 0.2);
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: #9b8baa;
+            font-weight: 500;
+        }
+
+        .recipe-tip {
+            margin-top: 20px;
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(255, 245, 245, 0.9), rgba(255, 250, 240, 0.9));
+            border-radius: 25px;
+            border: 2px dashed rgba(213, 184, 255, 0.4);
+        }
+
+        .recipe-tip h3 {
+            color: #d4b8d9;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recipe-tip ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recipe-tip li {
+            padding: 5px 0;
+            color: #a898b8;
+            font-size: 0.9rem;
+        }
+
         @keyframes snapAnimation {
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
         }
 
         @media (max-width: 968px) {
@@ -325,39 +408,37 @@
             .properties-panel {
                 grid-template-columns: repeat(2, 1fr);
             }
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: rgba(168, 230, 207, 0.2);
-            border-radius: 20px;
-            font-size: 12px;
-            color: #a8e6cf;
+            
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="lab-container">
-        <h1>🧪 Bioplastics Kitchen</h1>
-        <div class="subtitle">Interactive Material Science Lab</div>
+    <div class="bakery-container">
+        <h1>
+            <span>🧸</span> Bioplastics Bakery
+            <span style="font-size: 1.8rem; margin-left: auto; opacity: 0.6;">✨</span>
+        </h1>
+        <div class="subtitle">✧ where science meets sweetness ✧</div>
         
         <div class="main-grid">
-            <!-- LEFT PANEL: INGREDIENTS -->
+            <!-- LEFT PANEL -->
             <div class="ingredients-panel">
                 <div class="ingredient-card">
                     <div class="ingredient-header">
                         <div class="ingredient-name">
                             <div class="icon starch-icon">🌽</div>
-                            <span>Starch</span>
+                            <span>Corn Starch</span>
                         </div>
                         <div class="value-display">
                             <span id="starch-value">50</span><span class="unit">g</span>
                         </div>
                     </div>
                     <input type="range" id="starch-slider" min="0" max="100" value="50" step="1">
-                    <div style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px;">
-                        Foundation • Increases stiffness
+                    <div style="color: #c4b5d4; font-size: 0.8rem; margin-top: 8px; padding-left: 5px;">
+                        ✦ foundation ✦ makes it sturdy
                     </div>
                 </div>
 
@@ -368,82 +449,86 @@
                             <span>Glycerin</span>
                         </div>
                         <div class="value-display">
-                            <span id="glycerin-value">40</span><span class="unit">ml</span>
+                            <span id="glycerin-value">45</span><span class="unit">ml</span>
                         </div>
                     </div>
-                    <input type="range" id="glycerin-slider" min="0" max="100" value="40" step="1">
-                    <div style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px;">
-                        Plasticizer • Increases elasticity
+                    <input type="range" id="glycerin-slider" min="0" max="100" value="45" step="1">
+                    <div style="color: #c4b5d4; font-size: 0.8rem; margin-top: 8px; padding-left: 5px;">
+                        ✦ softener ✦ makes it stretchy
                     </div>
                 </div>
 
                 <div class="ingredient-card">
                     <div class="ingredient-header">
                         <div class="ingredient-name">
-                            <div class="icon vinegar-icon">🧪</div>
+                            <div class="icon vinegar-icon">🍋</div>
                             <span>Vinegar</span>
                         </div>
                         <div class="value-display">
-                            <span id="vinegar-value">10</span><span class="unit">ml</span>
+                            <span id="vinegar-value">5</span><span class="unit">ml</span>
                         </div>
                     </div>
-                    <input type="range" id="vinegar-slider" min="0" max="100" value="10" step="1">
-                    <div style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px;">
-                        Acid • Increases brittleness
+                    <input type="range" id="vinegar-slider" min="0" max="100" value="5" step="1">
+                    <div style="color: #c4b5d4; font-size: 0.8rem; margin-top: 8px; padding-left: 5px;">
+                        ✦ acid ✦ makes it snappy
                     </div>
                 </div>
 
                 <button class="cook-btn" id="cook-btn">
-                    🔬 Cook New Bioplastic
+                    🥄 Mix & Bake Bioplastic!
                 </button>
                 
                 <button class="reset-btn" id="reset-btn">
-                    🔄 Reset Puck Position
+                    🔄 Back to Center
                 </button>
                 
-                <div style="margin-top: 20px; padding: 15px; background: rgba(168, 230, 207, 0.1); border-radius: 15px;">
-                    <div style="font-size: 14px; color: #a8e6cf; margin-bottom: 8px;">💡 Current Status</div>
-                    <div id="puck-status" class="status-badge">⚪ No plastic yet - Click "Cook"</div>
-                    <ul style="color: rgba(255,255,255,0.6); font-size: 12px; list-style: none; padding: 0; margin-top: 12px;">
-                        <li>• Click and drag the edge to stretch</li>
-                        <li>• High Glycerin = More stretch</li>
-                        <li>• High Vinegar = Snaps easily</li>
+                <div class="recipe-tip">
+                    <h3>🍰 Recipe Magic</h3>
+                    <ul>
+                        <li>✨ More starch = firm & strong</li>
+                        <li>✨ More glycerin = bouncy & flexible</li>
+                        <li>✨ More vinegar = crispy & snappy</li>
                     </ul>
+                    <div style="margin-top: 15px;">
+                        <div class="status-badge" id="puck-status">
+                            🍳 Ready to bake!
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: LAB BENCH -->
+            <!-- RIGHT PANEL -->
             <div class="lab-bench">
                 <div class="animation-area">
-                    <canvas id="physics-canvas"></canvas>
+                    <canvas id="main-canvas"></canvas>
                 </div>
 
                 <!-- PROPERTIES -->
                 <div class="properties-panel">
                     <div class="property-card">
-                        <div class="property-label">Stiffness</div>
-                        <div class="property-value" id="stiffness-value">50</div>
+                        <div class="property-label">💪 Stiffness</div>
+                        <div class="property-value" id="stiffness-value">65</div>
                         <div class="property-bar">
                             <div class="property-fill stiffness-fill" id="stiffness-fill"></div>
                         </div>
                     </div>
                     <div class="property-card">
-                        <div class="property-label">Elasticity</div>
-                        <div class="property-value" id="elasticity-value">55</div>
+                        <div class="property-label">🎈 Elasticity</div>
+                        <div class="property-value" id="elasticity-value">72</div>
                         <div class="property-bar">
                             <div class="property-fill elasticity-fill" id="elasticity-fill"></div>
                         </div>
                     </div>
                     <div class="property-card">
-                        <div class="property-label">Tear Strength</div>
-                        <div class="property-value" id="tear-value">65</div>
+                        <div class="property-label">💧 Tear Strength</div>
+                        <div class="property-value" id="tear-value">68</div>
                         <div class="property-bar">
                             <div class="property-fill tear-fill" id="tear-fill"></div>
                         </div>
                     </div>
                     <div class="property-card">
-                        <div class="property-label">Biodegradable</div>
-                        <div class="property-value" id="bio-value">88</div>
+                        <div class="property-label">🌱 Biodegradable</div>
+                        <div class="property-value" id="bio-value">92</div>
                         <div class="property-bar">
                             <div class="property-fill bio-fill" id="bio-fill"></div>
                         </div>
@@ -453,33 +538,33 @@
                 <!-- STRETCH METER -->
                 <div class="stretch-container">
                     <div class="stretch-label">
-                        <span>🧬 Stretch Tension</span>
+                        <span>🎀 Stretch Tension</span>
                         <span id="stretch-percent">0%</span>
                     </div>
                     <div class="stretch-bar">
                         <div id="stretch-fill"></div>
                     </div>
                     <div class="instructions">
-                        👆 <strong>Grab the edge</strong> of the bioplastic and pull • The meter shows tension<br>
-                        <span style="color: #a8e6cf;">Pull beyond the limit and it SNAPS!</span>
+                        ✨ Grab the edge and pull gently! ✨<br>
+                        <span style="font-size: 0.85rem;">watch the tension meter • pull too far and it goes *snap*!</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="snap-indicator" id="snap-indicator">💥 SNAP!</div>
+    <div class="snap-indicator" id="snap-indicator">💔 SNAP!</div>
 
     <script>
         // ============================================
-        // BIOPLASTICS KITCHEN LAB - FIXED VERSION
-        // With proper grab-point stretching
+        // BIOPLASTICS BAKERY - CUTE PASTEL VERSION
+        // With animated cooking process
         // ============================================
 
-        const { Engine, Render, Runner, Bodies, Body, World, MouseConstraint, Mouse, Events, Vector } = Matter;
-
-        // Canvas and UI Elements
-        const canvas = document.getElementById('physics-canvas');
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // UI Elements
         const starchSlider = document.getElementById('starch-slider');
         const glycerinSlider = document.getElementById('glycerin-slider');
         const vinegarSlider = document.getElementById('vinegar-slider');
@@ -504,17 +589,26 @@
         const snapIndicator = document.getElementById('snap-indicator');
 
         // State
-        let currentRatios = { starch: 50, glycerin: 40, vinegar: 10 };
+        let currentRatios = { starch: 50, glycerin: 45, vinegar: 5 };
+        let isCooking = false;
+        let cookingPhase = 0; // 0: none, 1: pouring, 2: mixing, 3: drying
         let plasticPuck = null;
-        let mouseConstraint = null;
-        let engine = null;
-        let render = null;
-        let runner = null;
-        let snapThreshold = 200;
+        let isDragging = false;
+        let grabPoint = { x: 0, y: 0 };
+        let puckGrabbed = false;
+        let snapThreshold = 180;
         let isSnapped = false;
-        let grabPoint = null; // Track where the puck was grabbed
         let audioContext = null;
-        let currentConstraint = null;
+        let animationFrame = null;
+        let cookingProgress = 0;
+        
+        // Puck properties for manual physics
+        let puckX = 400;
+        let puckY = 250;
+        let puckVX = 0;
+        let puckVY = 0;
+        let puckRotation = 0;
+        const PUCK_SIZE = 90;
 
         // Initialize audio
         function initAudio() {
@@ -528,46 +622,32 @@
             
             const now = audioContext.currentTime;
             const osc1 = audioContext.createOscillator();
-            const osc2 = audioContext.createOscillator();
             const gain = audioContext.createGain();
-            const filter = audioContext.createBiquadFilter();
             
             osc1.type = 'sawtooth';
-            osc1.frequency.setValueAtTime(200, now);
-            osc1.frequency.exponentialRampToValueAtTime(50, now + 0.1);
+            osc1.frequency.setValueAtTime(300, now);
+            osc1.frequency.exponentialRampToValueAtTime(80, now + 0.12);
             
-            osc2.type = 'triangle';
-            osc2.frequency.setValueAtTime(400, now);
-            osc2.frequency.exponentialRampToValueAtTime(100, now + 0.08);
-            
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(1000, now);
-            filter.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-            
-            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.setValueAtTime(0.15, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
             
-            osc1.connect(filter);
-            osc2.connect(filter);
-            filter.connect(gain);
+            osc1.connect(gain);
             gain.connect(audioContext.destination);
             
             osc1.start();
-            osc2.start();
             osc1.stop(now + 0.15);
-            osc2.stop(now + 0.15);
         }
 
-        // Update properties based on ratios
+        // Update properties
         function updateProperties() {
             const s = currentRatios.starch;
             const g = currentRatios.glycerin;
             const v = currentRatios.vinegar;
             
-            const stiffness = Math.min(100, Math.max(0, (s * 1.5) + (v * 0.5) - (g * 0.8)));
-            const elasticity = Math.min(100, Math.max(0, (g * 1.8) - (v * 0.6) + (s * 0.2)));
-            const tearStrength = Math.min(100, Math.max(0, (s * 1.2) + (g * 0.5) - (v * 1.0)));
-            const biodegradability = Math.min(100, Math.max(0, 100 - (g * 0.3) - (v * 0.2)));
+            const stiffness = Math.min(100, Math.max(0, (s * 1.4) + (v * 0.5) - (g * 0.7)));
+            const elasticity = Math.min(100, Math.max(0, (g * 1.8) - (v * 0.5) + (s * 0.1)));
+            const tearStrength = Math.min(100, Math.max(0, (s * 1.1) + (g * 0.6) - (v * 1.2)));
+            const biodegradability = Math.min(100, Math.max(0, 100 - (g * 0.2) - (v * 0.3)));
             
             stiffnessValue.textContent = Math.round(stiffness);
             elasticityValue.textContent = Math.round(elasticity);
@@ -579,14 +659,10 @@
             tearFill.style.width = tearStrength + '%';
             bioFill.style.width = biodegradability + '%';
             
-            // Calculate snap threshold - more forgiving now
-            snapThreshold = 80 + (elasticity * 2.5) - (v * 1.5) + (s * 0.3);
-            snapThreshold = Math.max(60, Math.min(300, snapThreshold));
-            
-            return { stiffness, elasticity, tearStrength };
+            snapThreshold = 90 + (elasticity * 2.2) - (v * 1.3);
+            snapThreshold = Math.max(70, Math.min(280, snapThreshold));
         }
 
-        // Update slider display
         function updateSliderDisplay() {
             starchValue.textContent = starchSlider.value;
             glycerinValue.textContent = glycerinSlider.value;
@@ -598,256 +674,513 @@
                 vinegar: parseInt(vinegarSlider.value)
             };
             
-            const props = updateProperties();
-            
-            // Update puck properties if it exists
-            if (plasticPuck && !isSnapped) {
-                plasticPuck.restitution = props.elasticity / 100;
-                
-                const puckColor = `rgb(${168 + currentRatios.vinegar}, ${230 - currentRatios.starch/2}, ${207 - currentRatios.glycerin/2})`;
-                plasticPuck.render.fillStyle = puckColor;
-            }
+            updateProperties();
         }
 
-        // Reset puck to center
+        // Reset puck position
         function resetPuck() {
             if (plasticPuck && !isSnapped) {
-                Body.setPosition(plasticPuck, { x: canvas.width / 2, y: canvas.height / 2 - 30 });
-                Body.setVelocity(plasticPuck, { x: 0, y: 0 });
-                Body.setAngularVelocity(plasticPuck, 0);
+                puckX = canvas.width / 2;
+                puckY = canvas.height / 2 - 20;
+                puckVX = 0;
+                puckVY = 0;
+                puckRotation = 0;
                 stretchFill.style.width = '0%';
                 stretchPercent.textContent = '0%';
             }
         }
 
-        // Initialize physics
-        function initPhysics() {
-            // Clean up
-            if (render) {
-                Render.stop(render);
-                World.clear(engine.world);
-                Engine.clear(engine);
-                render.canvas.remove();
-                if (render.textCanvas) render.textCanvas.remove();
+        // Create new bioplastic
+        function createPlastic() {
+            plasticPuck = {
+                x: canvas.width / 2,
+                y: canvas.height / 2 - 20,
+                vx: 0,
+                vy: 0,
+                rotation: 0,
+                size: PUCK_SIZE
+            };
+            puckX = plasticPuck.x;
+            puckY = plasticPuck.y;
+            isSnapped = false;
+            puckStatus.innerHTML = '🍰 Fresh bioplastic! Grab and stretch gently';
+            puckStatus.style.color = '#9b8baa';
+        }
+
+        // Draw the bowl
+        function drawBowl() {
+            ctx.save();
+            
+            // Bowl shadow
+            ctx.shadowColor = 'rgba(213, 184, 255, 0.3)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 5;
+            
+            // Bowl outer
+            ctx.beginPath();
+            ctx.ellipse(canvas.width / 2, canvas.height / 2 + 30, 150, 70, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#fdf6f0';
+            ctx.strokeStyle = '#e8d5e0';
+            ctx.lineWidth = 4;
+            ctx.fill();
+            ctx.stroke();
+            
+            // Bowl inner
+            ctx.beginPath();
+            ctx.ellipse(canvas.width / 2, canvas.height / 2 + 25, 130, 60, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff8f5';
+            ctx.strokeStyle = '#f0e0e8';
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Bowl rim highlight
+            ctx.beginPath();
+            ctx.ellipse(canvas.width / 2, canvas.height / 2 - 5, 140, 30, 0, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        // Draw cooking animations
+        function drawCookingAnimation() {
+            if (!isCooking) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2 + 25;
+            
+            ctx.save();
+            
+            if (cookingPhase === 1) { // Pouring
+                const pourHeight = 40 + Math.sin(Date.now() / 150) * 15;
+                
+                // Pouring stream
+                ctx.beginPath();
+                ctx.moveTo(centerX - 80, 50);
+                ctx.lineTo(centerX - 50, centerY - pourHeight);
+                ctx.lineTo(centerX - 20, centerY - pourHeight);
+                ctx.lineTo(centerX - 50, 50);
+                
+                const gradient = ctx.createLinearGradient(centerX - 80, 50, centerX - 35, centerY);
+                gradient.addColorStop(0, `rgba(255, 240, 200, ${0.7 + currentRatios.starch/200})`);
+                gradient.addColorStop(1, `rgba(200, 230, 255, ${0.5 + currentRatios.glycerin/200})`);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                // Splash drops
+                for (let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    ctx.arc(centerX - 35 + i * 10, centerY - 20 + Math.sin(Date.now()/100 + i)*10, 4, 0, Math.PI*2);
+                    ctx.fillStyle = `rgba(213, 184, 255, 0.6)`;
+                    ctx.fill();
+                }
+                
+                puckStatus.innerHTML = '💧 Pouring ingredients...';
             }
             
-            engine = Engine.create();
-            engine.gravity.y = 0.3; // Gentle gravity
-            
-            render = Render.create({
-                element: document.querySelector('.animation-area'),
-                engine: engine,
-                canvas: canvas,
-                options: {
-                    width: canvas.clientWidth || 800,
-                    height: canvas.clientHeight || 400,
-                    wireframes: false,
-                    background: 'transparent',
-                    pixelRatio: 2
-                }
-            });
-            
-            // Create walls
-            const wallOptions = { 
-                isStatic: true, 
-                render: { visible: false },
-                restitution: 0.3
-            };
-            
-            const ground = Bodies.rectangle(canvas.width/2, canvas.height + 30, canvas.width, 60, wallOptions);
-            const leftWall = Bodies.rectangle(-30, canvas.height/2, 60, canvas.height, wallOptions);
-            const rightWall = Bodies.rectangle(canvas.width + 30, canvas.height/2, 60, canvas.height, wallOptions);
-            
-            World.add(engine.world, [ground, leftWall, rightWall]);
-            
-            // Create bioplastic puck
-            const props = updateProperties();
-            const puckColor = `rgb(${168 + currentRatios.vinegar}, ${230 - currentRatios.starch/2}, ${207 - currentRatios.glycerin/2})`;
-            
-            plasticPuck = Bodies.rectangle(canvas.width/2, canvas.height/2 - 30, 90, 90, {
-                chamfer: { radius: 12 },
-                render: {
-                    fillStyle: puckColor,
-                    strokeStyle: 'rgba(255, 255, 255, 0.4)',
-                    lineWidth: 2.5,
-                    opacity: 0.85
-                },
-                restitution: props.elasticity / 100,
-                friction: 0.15,
-                density: 0.0015,
-                frictionAir: 0.02
-            });
-            
-            World.add(engine.world, plasticPuck);
-            
-            // Setup mouse constraint
-            const mouse = Mouse.create(render.canvas);
-            mouseConstraint = MouseConstraint.create(engine, {
-                mouse: mouse,
-                constraint: {
-                    stiffness: 0.08, // Soft constraint for stretchy feel
-                    damping: 0.05,
-                    render: {
-                        visible: true,
-                        strokeStyle: 'rgba(168, 230, 207, 0.6)',
-                        lineWidth: 3
-                    }
-                }
-            });
-            
-            World.add(engine.world, mouseConstraint);
-            
-            // Track grab point
-            Events.on(mouseConstraint, 'mousedown', function(event) {
-                if (!plasticPuck || isSnapped) return;
+            if (cookingPhase === 2) { // Mixing
+                const mixAngle = Date.now() / 200;
                 
-                const mousePos = event.mouse.position;
-                const bodies = Matter.Query.point([plasticPuck], mousePos);
+                // Mixture in bowl
+                const mixtureColor = `rgb(${245 + currentRatios.vinegar/2}, ${235 - currentRatios.starch/4}, ${245 - currentRatios.glycerin/4})`;
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY - 5, 100, 45, 0, 0, Math.PI * 2);
+                ctx.fillStyle = mixtureColor;
+                ctx.globalAlpha = 0.7;
+                ctx.fill();
+                ctx.globalAlpha = 1;
                 
-                if (bodies.length > 0) {
-                    // Store the grab point relative to the body center
-                    grabPoint = Vector.sub(mousePos, plasticPuck.position);
-                    
-                    // Initialize audio on user interaction
-                    initAudio();
-                    if (audioContext.state === 'suspended') {
-                        audioContext.resume();
-                    }
-                }
-            });
-            
-            Events.on(mouseConstraint, 'mousemove', function(event) {
-                if (!plasticPuck || isSnapped || !grabPoint) return;
+                // Whisk
+                ctx.translate(centerX, centerY - 20);
+                ctx.rotate(Math.sin(mixAngle) * 0.5);
                 
-                const mousePos = event.mouse.position;
-                const bodyPos = plasticPuck.position;
+                ctx.beginPath();
+                ctx.rect(-4, -60, 8, 80);
+                ctx.fillStyle = '#d4c4d9';
+                ctx.fill();
                 
-                // Calculate the grab point position
-                const grabWorldPos = Vector.add(bodyPos, grabPoint);
+                ctx.beginPath();
+                ctx.ellipse(0, 20, 25, 10, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#c4b4c9';
+                ctx.fill();
                 
-                // Distance from grab point to mouse (the stretch amount)
-                const stretchDistance = Vector.magnitude(Vector.sub(mousePos, grabWorldPos));
+                ctx.restore();
                 
-                // Update stretch meter
-                const stretchRatio = Math.min(1, stretchDistance / snapThreshold);
-                stretchFill.style.width = (stretchRatio * 100) + '%';
-                stretchPercent.textContent = Math.round(stretchRatio * 100) + '%';
-                
-                // Color coding
-                if (stretchRatio > 0.8) {
-                    stretchFill.style.background = 'linear-gradient(90deg, #ff7675, #d63031)';
-                } else if (stretchRatio > 0.5) {
-                    stretchFill.style.background = 'linear-gradient(90deg, #ffeaa7, #fdcb6e)';
-                } else {
-                    stretchFill.style.background = 'linear-gradient(90deg, #a8e6cf, #55efc4)';
+                // Bubbles
+                for (let i = 0; i < 8; i++) {
+                    const bubbleX = centerX - 40 + (i * 15) + Math.sin(Date.now()/150 + i)*10;
+                    const bubbleY = centerY - 10 - (i * 3) + Math.cos(Date.now()/200 + i)*5;
+                    ctx.beginPath();
+                    ctx.arc(bubbleX, bubbleY, 3 + i%3, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fill();
                 }
                 
-                // SNAP DETECTION
-                if (stretchDistance > snapThreshold && !isSnapped) {
-                    snapPlastic();
+                puckStatus.innerHTML = '🥄 Mixing the magic...';
+            }
+            
+            if (cookingPhase === 3) { // Drying
+                // Heat waves
+                for (let i = 0; i < 5; i++) {
+                    const waveY = centerY - 60 - i * 8 + Math.sin(Date.now()/100 + i)*5;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - 50 + i*10, waveY);
+                    ctx.lineTo(centerX - 30 + i*10, waveY - 10);
+                    ctx.lineTo(centerX - 10 + i*10, waveY);
+                    ctx.strokeStyle = `rgba(255, 200, 200, ${0.3 - i*0.05})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
                 }
-            });
+                
+                // Drying mixture
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY - 5, 90, 40, 0, 0, Math.PI * 2);
+                const dryColor = `rgb(${235 + currentRatios.vinegar/3}, ${225 - currentRatios.starch/5}, ${235 - currentRatios.glycerin/5})`;
+                ctx.fillStyle = dryColor;
+                ctx.globalAlpha = 0.8;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                
+                puckStatus.innerHTML = '💨 Drying... almost ready!';
+            }
             
-            Events.on(mouseConstraint, 'mouseup', function() {
-                grabPoint = null;
-                if (!isSnapped) {
-                    stretchFill.style.width = '0%';
-                    stretchPercent.textContent = '0%';
+            ctx.restore();
+        }
+
+        // Draw the plastic puck
+        function drawPuck() {
+            if (!plasticPuck) return;
+            
+            ctx.save();
+            ctx.translate(puckX, puckY);
+            ctx.rotate(puckRotation);
+            
+            // Shadow
+            ctx.shadowColor = 'rgba(213, 184, 255, 0.4)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 3;
+            
+            // Puck color based on ingredients
+            const r = 235 + currentRatios.vinegar / 3;
+            const g = 225 - currentRatios.starch / 5;
+            const b = 235 - currentRatios.glycerin / 5;
+            
+            // Main puck
+            ctx.beginPath();
+            ctx.roundRect(-PUCK_SIZE/2, -PUCK_SIZE/2, PUCK_SIZE, PUCK_SIZE, 15);
+            
+            const gradient = ctx.createLinearGradient(-PUCK_SIZE/2, -PUCK_SIZE/2, PUCK_SIZE/2, PUCK_SIZE/2);
+            gradient.addColorStop(0, `rgb(${r}, ${g}, ${b})`);
+            gradient.addColorStop(1, `rgb(${r-15}, ${g-10}, ${b-10})`);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Border
+            ctx.strokeStyle = isSnapped ? '#ffb3b3' : 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = isSnapped ? 4 : 3;
+            ctx.stroke();
+            
+            // Highlight
+            ctx.beginPath();
+            ctx.roundRect(-PUCK_SIZE/2 + 5, -PUCK_SIZE/2 + 5, PUCK_SIZE/2, PUCK_SIZE/3, 8);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.fill();
+            
+            // Cute face if not snapped
+            if (!isSnapped) {
+                // Eyes
+                ctx.fillStyle = '#b8a9c4';
+                ctx.beginPath();
+                ctx.arc(-15, -5, 5, 0, Math.PI * 2);
+                ctx.arc(15, -5, 5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Eye shine
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(-18, -8, 2, 0, Math.PI * 2);
+                ctx.arc(12, -8, 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Blush
+                ctx.fillStyle = 'rgba(255, 180, 180, 0.4)';
+                ctx.beginPath();
+                ctx.arc(-25, 8, 8, 0, Math.PI * 2);
+                ctx.arc(25, 8, 8, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Smile
+                ctx.beginPath();
+                ctx.strokeStyle = '#b8a9c4';
+                ctx.lineWidth = 2.5;
+                ctx.arc(0, 10, 12, 0.1, Math.PI - 0.1);
+                ctx.stroke();
+            } else {
+                // Sad/cracked face
+                ctx.beginPath();
+                ctx.strokeStyle = '#ff9999';
+                ctx.lineWidth = 3;
+                ctx.moveTo(-20, -10);
+                ctx.lineTo(-5, -5);
+                ctx.moveTo(20, -10);
+                ctx.lineTo(5, -5);
+                ctx.stroke();
+                
+                // Crack line
+                ctx.beginPath();
+                ctx.strokeStyle = '#ffb3b3';
+                ctx.lineWidth = 2;
+                ctx.moveTo(-30, -10);
+                ctx.lineTo(-10, 10);
+                ctx.lineTo(15, -5);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
+        // Physics update
+        function updatePhysics() {
+            if (!plasticPuck || isDragging || isCooking) return;
+            
+            // Simple gravity and bounds
+            puckVY += 0.3;
+            
+            // Damping
+            puckVX *= 0.98;
+            puckVY *= 0.98;
+            
+            puckX += puckVX;
+            puckY += puckVY;
+            
+            // Bowl bounds (keep it in the bowl!)
+            const bowlCenterX = canvas.width / 2;
+            const bowlCenterY = canvas.height / 2 + 25;
+            const dx = puckX - bowlCenterX;
+            const dy = puckY - bowlCenterY;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            const maxDist = 100;
+            
+            if (dist > maxDist) {
+                const angle = Math.atan2(dy, dx);
+                puckX = bowlCenterX + Math.cos(angle) * maxDist;
+                puckY = bowlCenterY + Math.sin(angle) * maxDist;
+                
+                // Bounce
+                puckVX *= -0.3;
+                puckVY *= -0.3;
+            }
+            
+            // Floor of bowl
+            if (puckY > bowlCenterY + 30) {
+                puckY = bowlCenterY + 30;
+                puckVY *= -0.3;
+            }
+            
+            plasticPuck.x = puckX;
+            plasticPuck.y = puckY;
+        }
+
+        // Mouse interaction
+        function handleMouseDown(e) {
+            if (!plasticPuck || isSnapped || isCooking) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const dx = mouseX - puckX;
+            const dy = mouseY - puckY;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            
+            if (dist < PUCK_SIZE) {
+                isDragging = true;
+                grabPoint.x = dx;
+                grabPoint.y = dy;
+                puckGrabbed = true;
+                
+                initAudio();
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
                 }
-            });
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (!isDragging || !plasticPuck || isSnapped) return;
             
-            Render.run(render);
-            runner = Runner.create();
-            Runner.run(runner, engine);
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
             
-            isSnapped = false;
-            grabPoint = null;
-            puckStatus.innerHTML = '🟢 Bioplastic ready! Grab the edge and pull';
-            puckStatus.style.color = '#a8e6cf';
-            puckStatus.style.background = 'rgba(168, 230, 207, 0.2)';
+            // Calculate stretch from grab point
+            const grabWorldX = puckX + grabPoint.x;
+            const grabWorldY = puckY + grabPoint.y;
+            const stretchX = mouseX - grabWorldX;
+            const stretchY = mouseY - grabWorldY;
+            const stretchDist = Math.sqrt(stretchX*stretchX + stretchY*stretchY);
+            
+            // Update stretch meter
+            const stretchRatio = Math.min(1, stretchDist / snapThreshold);
+            stretchFill.style.width = (stretchRatio * 100) + '%';
+            stretchPercent.textContent = Math.round(stretchRatio * 100) + '%';
+            
+            // Color based on tension
+            if (stretchRatio > 0.8) {
+                stretchFill.style.background = 'linear-gradient(90deg, #ffb3b3, #ff9999)';
+            } else if (stretchRatio > 0.5) {
+                stretchFill.style.background = 'linear-gradient(90deg, #ffd4a8, #ffc4a8)';
+            } else {
+                stretchFill.style.background = 'linear-gradient(90deg, #a8e6cf, #a8d8ea)';
+            }
+            
+            // Move puck towards mouse (springy!)
+            puckVX = stretchX * 0.15;
+            puckVY = stretchY * 0.15;
+            
+            // Check for snap
+            if (stretchDist > snapThreshold && !isSnapped) {
+                snapPlastic();
+            }
+        }
+
+        function handleMouseUp() {
+            isDragging = false;
+            puckGrabbed = false;
+            
+            if (!isSnapped) {
+                stretchFill.style.width = '0%';
+                stretchPercent.textContent = '0%';
+            }
         }
 
         function snapPlastic() {
             if (isSnapped || !plasticPuck) return;
             
             isSnapped = true;
-            grabPoint = null;
+            isDragging = false;
             
-            // Play snap sound
             if (audioContext && audioContext.state === 'running') {
                 playSnapSound();
             }
             
-            // Visual feedback
             snapIndicator.style.animation = 'snapAnimation 0.8s ease-out';
             setTimeout(() => {
                 snapIndicator.style.animation = 'none';
             }, 800);
             
-            // Apply force
-            const bodyPos = plasticPuck.position;
-            Body.applyForce(plasticPuck, bodyPos, { 
-                x: (Math.random() - 0.5) * 0.15, 
-                y: -0.08 
-            });
+            puckVX = (Math.random() - 0.5) * 8;
+            puckVY = -5;
             
-            // Change appearance
-            plasticPuck.render.fillStyle = 'rgba(200, 100, 100, 0.7)';
-            plasticPuck.render.strokeStyle = 'rgba(255, 150, 150, 0.8)';
-            plasticPuck.render.lineWidth = 3;
+            puckStatus.innerHTML = '💔 Oh no! It snapped! Try a gentler recipe';
+            puckStatus.style.color = '#ff9999';
             
-            puckStatus.innerHTML = '💔 Plastic snapped! Cook a new batch';
-            puckStatus.style.color = '#ff7675';
-            puckStatus.style.background = 'rgba(255, 118, 117, 0.2)';
-            
-            // Reset meter
             setTimeout(() => {
                 stretchFill.style.width = '0%';
                 stretchPercent.textContent = '0%';
             }, 500);
         }
 
-        // Cooking sequence
-        function cookNewPlastic() {
-            if (!plasticPuck || isSnapped) {
-                // Just initialize new physics
-                initPhysics();
-                updateProperties();
-                return;
+        // Cooking animation sequence
+        async function startCooking() {
+            if (isCooking) return;
+            
+            isCooking = true;
+            cookBtn.disabled = true;
+            
+            // Phase 1: Pouring
+            cookingPhase = 1;
+            puckStatus.innerHTML = '💧 Pouring the mixture...';
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Phase 2: Mixing
+            cookingPhase = 2;
+            puckStatus.innerHTML = '🥄 Mixing ingredients together...';
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            
+            // Phase 3: Drying
+            cookingPhase = 3;
+            puckStatus.innerHTML = '💨 Drying the bioplastic...';
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Done!
+            isCooking = false;
+            cookingPhase = 0;
+            cookBtn.disabled = false;
+            
+            createPlastic();
+            puckStatus.innerHTML = '✨ Fresh bioplastic is ready! Grab and stretch gently ✨';
+            puckStatus.style.color = '#9b8baa';
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background pattern
+            ctx.fillStyle = 'rgba(255, 250, 240, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            drawBowl();
+            
+            if (isCooking) {
+                drawCookingAnimation();
             }
             
-            // Remove old and create new
-            World.remove(engine.world, plasticPuck);
-            initPhysics();
-            updateProperties();
+            if (plasticPuck && !isCooking) {
+                updatePhysics();
+                drawPuck();
+            }
+            
+            animationFrame = requestAnimationFrame(animate);
         }
+
+        // Canvas roundRect helper
+        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            this.moveTo(x + r, y);
+            this.lineTo(x + w - r, y);
+            this.quadraticCurveTo(x + w, y, x + w, y + r);
+            this.lineTo(x + w, y + h - r);
+            this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            this.lineTo(x + r, y + h);
+            this.quadraticCurveTo(x, y + h, x, y + h - r);
+            this.lineTo(x, y + r);
+            this.quadraticCurveTo(x, y, x + r, y);
+            return this;
+        };
 
         // Event listeners
         starchSlider.addEventListener('input', updateSliderDisplay);
         glycerinSlider.addEventListener('input', updateSliderDisplay);
         vinegarSlider.addEventListener('input', updateSliderDisplay);
         
-        cookBtn.addEventListener('click', () => {
-            initAudio();
-            cookNewPlastic();
-        });
-        
+        cookBtn.addEventListener('click', startCooking);
         resetBtn.addEventListener('click', resetPuck);
         
-        // Handle window resize
+        canvas.addEventListener('mousedown', handleMouseDown);
+        canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('mouseup', handleMouseUp);
+        canvas.addEventListener('mouseleave', handleMouseUp);
+        
+        // Resize handler
         function handleResize() {
             const container = document.querySelector('.animation-area');
-            const newWidth = container.clientWidth;
-            const newHeight = container.clientHeight;
+            canvas.width = container.clientWidth - 50;
+            canvas.height = 400;
             
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-            
-            if (render) {
-                render.options.width = newWidth;
-                render.options.height = newHeight;
-                render.canvas.width = newWidth;
-                render.canvas.height = newHeight;
+            if (plasticPuck && !isCooking) {
+                puckX = canvas.width / 2;
+                puckY = canvas.height / 2 - 20;
             }
         }
         
@@ -857,11 +1190,9 @@
         function init() {
             handleResize();
             updateSliderDisplay();
+            animate();
             
-            // Show initial message
-            setTimeout(() => {
-                puckStatus.innerHTML = '🍳 Click "Cook Bioplastic" to start!';
-            }, 500);
+            puckStatus.innerHTML = '🍳 Click "Mix & Bake" to start!';
         }
 
         init();
