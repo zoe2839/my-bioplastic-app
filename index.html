@@ -143,7 +143,6 @@
         #glycerin-slider::-webkit-slider-thumb { background: linear-gradient(135deg, #81ecec, #00cec9); }
         #vinegar-slider::-webkit-slider-thumb { background: linear-gradient(135deg, #ff7675, #d63031); }
 
-        /* COOK BUTTON */
         .cook-btn {
             width: 100%;
             padding: 18px;
@@ -170,6 +169,23 @@
             transform: none;
         }
 
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
         /* LAB BENCH */
         .lab-bench {
             display: flex;
@@ -187,7 +203,7 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        #mixing-canvas {
+        #physics-canvas {
             width: 100%;
             height: 400px;
             display: block;
@@ -274,12 +290,12 @@
             border-radius: 4px;
         }
 
-        /* INSTRUCTIONS */
         .instructions {
             margin-top: 15px;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 13px;
             text-align: center;
+            line-height: 1.5;
         }
 
         .snap-indicator {
@@ -294,22 +310,11 @@
             opacity: 0;
             pointer-events: none;
             z-index: 1000;
-            animation: none;
         }
 
         @keyframes snapAnimation {
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
-        }
-
-        /* LOADING STATE */
-        .mixing-animation {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 18px;
-            color: #a8e6cf;
         }
 
         @media (max-width: 968px) {
@@ -320,6 +325,15 @@
             .properties-panel {
                 grid-template-columns: repeat(2, 1fr);
             }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(168, 230, 207, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #a8e6cf;
         }
     </style>
 </head>
@@ -354,10 +368,10 @@
                             <span>Glycerin</span>
                         </div>
                         <div class="value-display">
-                            <span id="glycerin-value">30</span><span class="unit">ml</span>
+                            <span id="glycerin-value">40</span><span class="unit">ml</span>
                         </div>
                     </div>
-                    <input type="range" id="glycerin-slider" min="0" max="100" value="30" step="1">
+                    <input type="range" id="glycerin-slider" min="0" max="100" value="40" step="1">
                     <div style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px;">
                         Plasticizer • Increases elasticity
                     </div>
@@ -370,25 +384,30 @@
                             <span>Vinegar</span>
                         </div>
                         <div class="value-display">
-                            <span id="vinegar-value">20</span><span class="unit">ml</span>
+                            <span id="vinegar-value">10</span><span class="unit">ml</span>
                         </div>
                     </div>
-                    <input type="range" id="vinegar-slider" min="0" max="100" value="20" step="1">
+                    <input type="range" id="vinegar-slider" min="0" max="100" value="10" step="1">
                     <div style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px;">
                         Acid • Increases brittleness
                     </div>
                 </div>
 
                 <button class="cook-btn" id="cook-btn">
-                    🔬 Cook Bioplastic
+                    🔬 Cook New Bioplastic
+                </button>
+                
+                <button class="reset-btn" id="reset-btn">
+                    🔄 Reset Puck Position
                 </button>
                 
                 <div style="margin-top: 20px; padding: 15px; background: rgba(168, 230, 207, 0.1); border-radius: 15px;">
-                    <div style="font-size: 14px; color: #a8e6cf; margin-bottom: 8px;">💡 Recipe Tips</div>
-                    <ul style="color: rgba(255,255,255,0.6); font-size: 12px; list-style: none; padding: 0;">
-                        <li>• High Starch = Rigid & Strong</li>
-                        <li>• High Glycerin = Stretchy & Flexible</li>
-                        <li>• High Vinegar = Brittle & Snappy</li>
+                    <div style="font-size: 14px; color: #a8e6cf; margin-bottom: 8px;">💡 Current Status</div>
+                    <div id="puck-status" class="status-badge">⚪ No plastic yet - Click "Cook"</div>
+                    <ul style="color: rgba(255,255,255,0.6); font-size: 12px; list-style: none; padding: 0; margin-top: 12px;">
+                        <li>• Click and drag the edge to stretch</li>
+                        <li>• High Glycerin = More stretch</li>
+                        <li>• High Vinegar = Snaps easily</li>
                     </ul>
                 </div>
             </div>
@@ -396,10 +415,7 @@
             <!-- RIGHT PANEL: LAB BENCH -->
             <div class="lab-bench">
                 <div class="animation-area">
-                    <canvas id="mixing-canvas"></canvas>
-                    <div id="mixing-text" style="position: absolute; top: 20px; left: 30px; color: #a8e6cf; font-size: 14px; opacity: 0.7;">
-                        ⚗️ Ready to mix
-                    </div>
+                    <canvas id="physics-canvas"></canvas>
                 </div>
 
                 <!-- PROPERTIES -->
@@ -413,21 +429,21 @@
                     </div>
                     <div class="property-card">
                         <div class="property-label">Elasticity</div>
-                        <div class="property-value" id="elasticity-value">30</div>
+                        <div class="property-value" id="elasticity-value">55</div>
                         <div class="property-bar">
                             <div class="property-fill elasticity-fill" id="elasticity-fill"></div>
                         </div>
                     </div>
                     <div class="property-card">
                         <div class="property-label">Tear Strength</div>
-                        <div class="property-value" id="tear-value">45</div>
+                        <div class="property-value" id="tear-value">65</div>
                         <div class="property-bar">
                             <div class="property-fill tear-fill" id="tear-fill"></div>
                         </div>
                     </div>
                     <div class="property-card">
-                        <div class="property-label">Biodegradability</div>
-                        <div class="property-value" id="bio-value">85</div>
+                        <div class="property-label">Biodegradable</div>
+                        <div class="property-value" id="bio-value">88</div>
                         <div class="property-bar">
                             <div class="property-fill bio-fill" id="bio-fill"></div>
                         </div>
@@ -444,7 +460,8 @@
                         <div id="stretch-fill"></div>
                     </div>
                     <div class="instructions">
-                        👆 Click and drag the bioplastic to stretch it • Pull too far and it SNAPS!
+                        👆 <strong>Grab the edge</strong> of the bioplastic and pull • The meter shows tension<br>
+                        <span style="color: #a8e6cf;">Pull beyond the limit and it SNAPS!</span>
                     </div>
                 </div>
             </div>
@@ -455,18 +472,14 @@
 
     <script>
         // ============================================
-        // BIOPLASTICS KITCHEN LAB
-        // Complete Interactive Physics Simulation
+        // BIOPLASTICS KITCHEN LAB - FIXED VERSION
+        // With proper grab-point stretching
         // ============================================
 
-        // Matter.js modules
-        const { Engine, Render, Runner, Bodies, Body, World, Constraint, MouseConstraint, Mouse, Events } = Matter;
+        const { Engine, Render, Runner, Bodies, Body, World, MouseConstraint, Mouse, Events, Vector } = Matter;
 
-        // Canvas setup
-        const canvas = document.getElementById('mixing-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // UI Elements
+        // Canvas and UI Elements
+        const canvas = document.getElementById('physics-canvas');
         const starchSlider = document.getElementById('starch-slider');
         const glycerinSlider = document.getElementById('glycerin-slider');
         const vinegarSlider = document.getElementById('vinegar-slider');
@@ -474,7 +487,8 @@
         const glycerinValue = document.getElementById('glycerin-value');
         const vinegarValue = document.getElementById('vinegar-value');
         const cookBtn = document.getElementById('cook-btn');
-        const mixingText = document.getElementById('mixing-text');
+        const resetBtn = document.getElementById('reset-btn');
+        const puckStatus = document.getElementById('puck-status');
         
         // Property displays
         const stiffnessValue = document.getElementById('stiffness-value');
@@ -490,21 +504,19 @@
         const snapIndicator = document.getElementById('snap-indicator');
 
         // State
-        let currentRatios = { starch: 50, glycerin: 30, vinegar: 20 };
-        let isCooking = false;
+        let currentRatios = { starch: 50, glycerin: 40, vinegar: 10 };
         let plasticPuck = null;
         let mouseConstraint = null;
         let engine = null;
         let render = null;
         let runner = null;
-        let snapThreshold = 150;
+        let snapThreshold = 200;
         let isSnapped = false;
-        let animationFrame = null;
-        let mixingProgress = 0;
-
-        // Audio context for snap sound (browser-friendly)
+        let grabPoint = null; // Track where the puck was grabbed
         let audioContext = null;
-        
+        let currentConstraint = null;
+
+        // Initialize audio
         function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -512,11 +524,9 @@
         }
 
         function playSnapSound() {
-            if (!audioContext) return;
+            if (!audioContext || audioContext.state !== 'running') return;
             
             const now = audioContext.currentTime;
-            
-            // Create a crunchy snap sound
             const osc1 = audioContext.createOscillator();
             const osc2 = audioContext.createOscillator();
             const gain = audioContext.createGain();
@@ -534,7 +544,7 @@
             filter.frequency.setValueAtTime(1000, now);
             filter.frequency.exponentialRampToValueAtTime(100, now + 0.1);
             
-            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.setValueAtTime(0.2, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
             
             osc1.connect(filter);
@@ -548,7 +558,35 @@
             osc2.stop(now + 0.15);
         }
 
-        // Update sliders display
+        // Update properties based on ratios
+        function updateProperties() {
+            const s = currentRatios.starch;
+            const g = currentRatios.glycerin;
+            const v = currentRatios.vinegar;
+            
+            const stiffness = Math.min(100, Math.max(0, (s * 1.5) + (v * 0.5) - (g * 0.8)));
+            const elasticity = Math.min(100, Math.max(0, (g * 1.8) - (v * 0.6) + (s * 0.2)));
+            const tearStrength = Math.min(100, Math.max(0, (s * 1.2) + (g * 0.5) - (v * 1.0)));
+            const biodegradability = Math.min(100, Math.max(0, 100 - (g * 0.3) - (v * 0.2)));
+            
+            stiffnessValue.textContent = Math.round(stiffness);
+            elasticityValue.textContent = Math.round(elasticity);
+            tearValue.textContent = Math.round(tearStrength);
+            bioValue.textContent = Math.round(biodegradability);
+            
+            stiffnessFill.style.width = stiffness + '%';
+            elasticityFill.style.width = elasticity + '%';
+            tearFill.style.width = tearStrength + '%';
+            bioFill.style.width = biodegradability + '%';
+            
+            // Calculate snap threshold - more forgiving now
+            snapThreshold = 80 + (elasticity * 2.5) - (v * 1.5) + (s * 0.3);
+            snapThreshold = Math.max(60, Math.min(300, snapThreshold));
+            
+            return { stiffness, elasticity, tearStrength };
+        }
+
+        // Update slider display
         function updateSliderDisplay() {
             starchValue.textContent = starchSlider.value;
             glycerinValue.textContent = glycerinSlider.value;
@@ -560,140 +598,49 @@
                 vinegar: parseInt(vinegarSlider.value)
             };
             
-            updateProperties();
-        }
-
-        // Calculate and update material properties
-        function updateProperties() {
-            const s = currentRatios.starch;
-            const g = currentRatios.glycerin;
-            const v = currentRatios.vinegar;
+            const props = updateProperties();
             
-            // Property calculations
-            const stiffness = Math.min(100, Math.max(0, (s * 1.5) + (v * 0.5) - (g * 0.8)));
-            const elasticity = Math.min(100, Math.max(0, (g * 1.8) - (v * 0.6) + (s * 0.2)));
-            const tearStrength = Math.min(100, Math.max(0, (s * 1.2) + (g * 0.5) - (v * 1.0)));
-            const biodegradability = Math.min(100, Math.max(0, 100 - (g * 0.3) - (v * 0.2)));
-            
-            // Update UI
-            stiffnessValue.textContent = Math.round(stiffness);
-            elasticityValue.textContent = Math.round(elasticity);
-            tearValue.textContent = Math.round(tearStrength);
-            bioValue.textContent = Math.round(biodegradability);
-            
-            stiffnessFill.style.width = stiffness + '%';
-            elasticityFill.style.width = elasticity + '%';
-            tearFill.style.width = tearStrength + '%';
-            bioFill.style.width = biodegradability + '%';
-            
-            // Calculate snap threshold based on properties
-            snapThreshold = 100 + (elasticity * 3) - (v * 2) + (s * 0.5);
-            snapThreshold = Math.max(50, Math.min(300, snapThreshold));
-        }
-
-        // Draw mixing animation
-        function drawMixing() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw bowl
-            ctx.save();
-            ctx.translate(canvas.width / 2, canvas.height / 2 + 50);
-            
-            // Bowl gradient
-            const gradient = ctx.createLinearGradient(-100, -50, 100, 50);
-            gradient.addColorStop(0, 'rgba(168, 230, 207, 0.2)');
-            gradient.addColorStop(1, 'rgba(129, 236, 236, 0.1)');
-            
-            // Bowl shape
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 120, 60, 0, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            if (isCooking) {
-                // Animated mixture
-                const mixtureHeight = 30 + Math.sin(Date.now() / 200) * 10;
-                const mixColor = `rgba(${168 + currentRatios.vinegar}, ${230 - currentRatios.starch/2}, ${207 - currentRatios.glycerin/2}, 0.6)`;
+            // Update puck properties if it exists
+            if (plasticPuck && !isSnapped) {
+                plasticPuck.restitution = props.elasticity / 100;
                 
-                ctx.beginPath();
-                ctx.ellipse(0, 0, 100, mixtureHeight, 0, 0, Math.PI * 2);
-                ctx.fillStyle = mixColor;
-                ctx.fill();
-                
-                // Stirring rod
-                const rodAngle = Date.now() / 300;
-                ctx.save();
-                ctx.rotate(rodAngle);
-                ctx.beginPath();
-                ctx.rect(-5, -80, 10, 100);
-                ctx.fillStyle = 'rgba(200, 200, 200, 0.6)';
-                ctx.fill();
-                
-                // Stirring head
-                ctx.beginPath();
-                ctx.ellipse(0, 20, 30, 10, 0, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(200, 200, 200, 0.4)';
-                ctx.fill();
-                ctx.restore();
-                
-                // Bubbles
-                for (let i = 0; i < 5; i++) {
-                    const bubbleY = -20 + Math.sin(Date.now() / 150 + i) * 30;
-                    ctx.beginPath();
-                    ctx.arc(-30 + i * 20, bubbleY, 3, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-                    ctx.fill();
-                }
-            } else if (plasticPuck) {
-                // Show finished bioplastic in bowl
-                const mixColor = `rgba(${168 + currentRatios.vinegar}, ${230 - currentRatios.starch/2}, ${207 - currentRatios.glycerin/2}, 0.7)`;
-                ctx.beginPath();
-                ctx.ellipse(0, 0, 80, 40, 0, 0, Math.PI * 2);
-                ctx.fillStyle = mixColor;
-                ctx.fill();
-                ctx.shadowColor = 'rgba(168, 230, 207, 0.5)';
-                ctx.shadowBlur = 20;
-                ctx.fill();
-                ctx.shadowBlur = 0;
+                const puckColor = `rgb(${168 + currentRatios.vinegar}, ${230 - currentRatios.starch/2}, ${207 - currentRatios.glycerin/2})`;
+                plasticPuck.render.fillStyle = puckColor;
             }
-            
-            ctx.restore();
-            
-            if (isCooking) {
-                mixingProgress += 0.02;
-                if (mixingProgress >= 1) {
-                    finishCooking();
-                }
-            }
-            
-            animationFrame = requestAnimationFrame(drawMixing);
         }
 
-        // Initialize Matter.js physics
+        // Reset puck to center
+        function resetPuck() {
+            if (plasticPuck && !isSnapped) {
+                Body.setPosition(plasticPuck, { x: canvas.width / 2, y: canvas.height / 2 - 30 });
+                Body.setVelocity(plasticPuck, { x: 0, y: 0 });
+                Body.setAngularVelocity(plasticPuck, 0);
+                stretchFill.style.width = '0%';
+                stretchPercent.textContent = '0%';
+            }
+        }
+
+        // Initialize physics
         function initPhysics() {
-            // Clean up previous instance
+            // Clean up
             if (render) {
                 Render.stop(render);
                 World.clear(engine.world);
                 Engine.clear(engine);
                 render.canvas.remove();
-                render.textCanvas.remove();
+                if (render.textCanvas) render.textCanvas.remove();
             }
             
-            // Create engine
             engine = Engine.create();
+            engine.gravity.y = 0.3; // Gentle gravity
             
-            // Create renderer
             render = Render.create({
                 element: document.querySelector('.animation-area'),
                 engine: engine,
                 canvas: canvas,
                 options: {
-                    width: canvas.clientWidth,
-                    height: canvas.clientHeight,
+                    width: canvas.clientWidth || 800,
+                    height: canvas.clientHeight || 400,
                     wireframes: false,
                     background: 'transparent',
                     pixelRatio: 2
@@ -701,42 +648,48 @@
             });
             
             // Create walls
-            const wallOptions = { isStatic: true, render: { visible: false } };
-            const walls = [
-                Bodies.rectangle(canvas.width/2, canvas.height + 30, canvas.width, 60, wallOptions), // ground
-                Bodies.rectangle(-30, canvas.height/2, 60, canvas.height, wallOptions), // left
-                Bodies.rectangle(canvas.width + 30, canvas.height/2, 60, canvas.height, wallOptions), // right
-            ];
+            const wallOptions = { 
+                isStatic: true, 
+                render: { visible: false },
+                restitution: 0.3
+            };
             
-            World.add(engine.world, walls);
+            const ground = Bodies.rectangle(canvas.width/2, canvas.height + 30, canvas.width, 60, wallOptions);
+            const leftWall = Bodies.rectangle(-30, canvas.height/2, 60, canvas.height, wallOptions);
+            const rightWall = Bodies.rectangle(canvas.width + 30, canvas.height/2, 60, canvas.height, wallOptions);
+            
+            World.add(engine.world, [ground, leftWall, rightWall]);
             
             // Create bioplastic puck
+            const props = updateProperties();
             const puckColor = `rgb(${168 + currentRatios.vinegar}, ${230 - currentRatios.starch/2}, ${207 - currentRatios.glycerin/2})`;
             
-            plasticPuck = Bodies.rectangle(canvas.width/2, canvas.height/2 - 50, 100, 100, {
-                chamfer: { radius: 15 },
+            plasticPuck = Bodies.rectangle(canvas.width/2, canvas.height/2 - 30, 90, 90, {
+                chamfer: { radius: 12 },
                 render: {
                     fillStyle: puckColor,
-                    strokeStyle: 'rgba(255, 255, 255, 0.3)',
-                    lineWidth: 2,
-                    opacity: 0.8
+                    strokeStyle: 'rgba(255, 255, 255, 0.4)',
+                    lineWidth: 2.5,
+                    opacity: 0.85
                 },
-                restitution: currentRatios.glycerin / 100,
-                friction: 0.1,
-                density: 0.001
+                restitution: props.elasticity / 100,
+                friction: 0.15,
+                density: 0.0015,
+                frictionAir: 0.02
             });
             
             World.add(engine.world, plasticPuck);
             
-            // Add mouse constraint
+            // Setup mouse constraint
             const mouse = Mouse.create(render.canvas);
             mouseConstraint = MouseConstraint.create(engine, {
                 mouse: mouse,
                 constraint: {
-                    stiffness: 0.1,
+                    stiffness: 0.08, // Soft constraint for stretchy feel
+                    damping: 0.05,
                     render: {
                         visible: true,
-                        strokeStyle: 'rgba(168, 230, 207, 0.5)',
+                        strokeStyle: 'rgba(168, 230, 207, 0.6)',
                         lineWidth: 3
                     }
                 }
@@ -744,65 +697,85 @@
             
             World.add(engine.world, mouseConstraint);
             
-            // Track stretching
-            let mousePos = { x: 0, y: 0 };
-            
-            Events.on(mouseConstraint, 'mousemove', function(event) {
+            // Track grab point
+            Events.on(mouseConstraint, 'mousedown', function(event) {
                 if (!plasticPuck || isSnapped) return;
                 
-                mousePos = event.mouse.position;
+                const mousePos = event.mouse.position;
+                const bodies = Matter.Query.point([plasticPuck], mousePos);
+                
+                if (bodies.length > 0) {
+                    // Store the grab point relative to the body center
+                    grabPoint = Vector.sub(mousePos, plasticPuck.position);
+                    
+                    // Initialize audio on user interaction
+                    initAudio();
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                }
+            });
+            
+            Events.on(mouseConstraint, 'mousemove', function(event) {
+                if (!plasticPuck || isSnapped || !grabPoint) return;
+                
+                const mousePos = event.mouse.position;
                 const bodyPos = plasticPuck.position;
                 
-                const dx = mousePos.x - bodyPos.x;
-                const dy = mousePos.y - bodyPos.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+                // Calculate the grab point position
+                const grabWorldPos = Vector.add(bodyPos, grabPoint);
+                
+                // Distance from grab point to mouse (the stretch amount)
+                const stretchDistance = Vector.magnitude(Vector.sub(mousePos, grabWorldPos));
                 
                 // Update stretch meter
-                const stretchRatio = Math.min(1, distance / snapThreshold);
+                const stretchRatio = Math.min(1, stretchDistance / snapThreshold);
                 stretchFill.style.width = (stretchRatio * 100) + '%';
                 stretchPercent.textContent = Math.round(stretchRatio * 100) + '%';
                 
-                // Change color based on stretch
-                if (stretchRatio > 0.7) {
+                // Color coding
+                if (stretchRatio > 0.8) {
                     stretchFill.style.background = 'linear-gradient(90deg, #ff7675, #d63031)';
-                } else if (stretchRatio > 0.4) {
+                } else if (stretchRatio > 0.5) {
                     stretchFill.style.background = 'linear-gradient(90deg, #ffeaa7, #fdcb6e)';
                 } else {
                     stretchFill.style.background = 'linear-gradient(90deg, #a8e6cf, #55efc4)';
                 }
                 
                 // SNAP DETECTION
-                if (distance > snapThreshold && !isSnapped) {
+                if (stretchDistance > snapThreshold && !isSnapped) {
                     snapPlastic();
                 }
             });
             
             Events.on(mouseConstraint, 'mouseup', function() {
+                grabPoint = null;
                 if (!isSnapped) {
                     stretchFill.style.width = '0%';
                     stretchPercent.textContent = '0%';
                 }
             });
             
-            // Run the engine and renderer
             Render.run(render);
             runner = Runner.create();
             Runner.run(runner, engine);
             
             isSnapped = false;
+            grabPoint = null;
+            puckStatus.innerHTML = '🟢 Bioplastic ready! Grab the edge and pull';
+            puckStatus.style.color = '#a8e6cf';
+            puckStatus.style.background = 'rgba(168, 230, 207, 0.2)';
         }
 
         function snapPlastic() {
             if (isSnapped || !plasticPuck) return;
             
             isSnapped = true;
+            grabPoint = null;
             
             // Play snap sound
             if (audioContext && audioContext.state === 'running') {
                 playSnapSound();
-            } else {
-                initAudio();
-                audioContext.resume().then(() => playSnapSound());
             }
             
             // Visual feedback
@@ -811,27 +784,21 @@
                 snapIndicator.style.animation = 'none';
             }, 800);
             
-            // Break the constraint
-            if (mouseConstraint) {
-                mouseConstraint.constraint.render.visible = false;
-            }
-            
-            // Apply force to simulate snap
+            // Apply force
             const bodyPos = plasticPuck.position;
             Body.applyForce(plasticPuck, bodyPos, { 
-                x: (Math.random() - 0.5) * 0.1, 
-                y: -0.05 
+                x: (Math.random() - 0.5) * 0.15, 
+                y: -0.08 
             });
             
             // Change appearance
-            plasticPuck.render.fillStyle = 'rgba(200, 100, 100, 0.6)';
-            plasticPuck.render.strokeStyle = 'rgba(255, 100, 100, 0.5)';
+            plasticPuck.render.fillStyle = 'rgba(200, 100, 100, 0.7)';
+            plasticPuck.render.strokeStyle = 'rgba(255, 150, 150, 0.8)';
+            plasticPuck.render.lineWidth = 3;
             
-            // Add crack line (visual)
-            plasticPuck.render.lineWidth = 4;
-            
-            mixingText.textContent = '💔 Bioplastic snapped! Try a different ratio.';
-            mixingText.style.color = '#ff7675';
+            puckStatus.innerHTML = '💔 Plastic snapped! Cook a new batch';
+            puckStatus.style.color = '#ff7675';
+            puckStatus.style.background = 'rgba(255, 118, 117, 0.2)';
             
             // Reset meter
             setTimeout(() => {
@@ -840,41 +807,19 @@
             }, 500);
         }
 
-        // Cooking animation sequence
-        function startCooking() {
-            if (isCooking) return;
+        // Cooking sequence
+        function cookNewPlastic() {
+            if (!plasticPuck || isSnapped) {
+                // Just initialize new physics
+                initPhysics();
+                updateProperties();
+                return;
+            }
             
-            isCooking = true;
-            mixingProgress = 0;
-            cookBtn.disabled = true;
-            mixingText.textContent = '🔥 Heating mixture...';
-            
-            // Animate sliders disable
-            [starchSlider, glycerinSlider, vinegarSlider].forEach(s => s.disabled = true);
-            
-            setTimeout(() => {
-                mixingText.textContent = '🥄 Stirring...';
-            }, 1000);
-            
-            setTimeout(() => {
-                mixingText.textContent = '💨 Drying...';
-            }, 2000);
-        }
-
-        function finishCooking() {
-            isCooking = false;
-            cookBtn.disabled = false;
-            mixingText.textContent = '✅ Bioplastic ready! Click and drag to stretch.';
-            mixingText.style.color = '#a8e6cf';
-            
-            // Enable sliders for next batch
-            [starchSlider, glycerinSlider, vinegarSlider].forEach(s => s.disabled = false);
-            
-            // Initialize physics with new puck
+            // Remove old and create new
+            World.remove(engine.world, plasticPuck);
             initPhysics();
-            
-            cancelAnimationFrame(animationFrame);
-            requestAnimationFrame(drawMixing);
+            updateProperties();
         }
 
         // Event listeners
@@ -883,30 +828,40 @@
         vinegarSlider.addEventListener('input', updateSliderDisplay);
         
         cookBtn.addEventListener('click', () => {
-            initAudio(); // Initialize audio on user interaction
-            startCooking();
+            initAudio();
+            cookNewPlastic();
         });
         
+        resetBtn.addEventListener('click', resetPuck);
+        
         // Handle window resize
-        window.addEventListener('resize', () => {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
+        function handleResize() {
+            const container = document.querySelector('.animation-area');
+            const newWidth = container.clientWidth;
+            const newHeight = container.clientHeight;
+            
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            
             if (render) {
-                render.options.width = canvas.width;
-                render.options.height = canvas.height;
+                render.options.width = newWidth;
+                render.options.height = newHeight;
+                render.canvas.width = newWidth;
+                render.canvas.height = newHeight;
             }
-        });
+        }
+        
+        window.addEventListener('resize', handleResize);
 
         // Initialize
         function init() {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
+            handleResize();
             updateSliderDisplay();
-            requestAnimationFrame(drawMixing);
             
-            // Create initial puck (transparent, not interactive yet)
-            ctx.fillStyle = 'rgba(168, 230, 207, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Show initial message
+            setTimeout(() => {
+                puckStatus.innerHTML = '🍳 Click "Cook Bioplastic" to start!';
+            }, 500);
         }
 
         init();
