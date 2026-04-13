@@ -288,6 +288,8 @@
             border: 2px solid rgba(255, 220, 240, 0.6);
             display: flex;
             flex-direction: column;
+            max-height: 750px;
+            overflow-y: auto;
         }
 
         .molecular-header {
@@ -308,7 +310,7 @@
 
         #molecular-canvas {
             width: 100%;
-            height: 250px;
+            height: 220px;
             background: rgba(255, 255, 255, 0.7);
             border-radius: 25px;
             border: 2px solid rgba(213, 184, 255, 0.3);
@@ -349,6 +351,13 @@
             padding: 8px;
             background: rgba(213, 184, 255, 0.1);
             border-radius: 15px;
+            cursor: help;
+            transition: all 0.2s;
+        }
+
+        .stat-item:hover {
+            background: rgba(213, 184, 255, 0.2);
+            transform: scale(1.02);
         }
 
         .stat-value {
@@ -372,6 +381,53 @@
             line-height: 1.5;
             color: #7b6b8a;
             border: 2px solid rgba(255, 200, 220, 0.3);
+        }
+
+        /* GLOSSARY SECTION */
+        .glossary-section {
+            margin-top: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            border: 2px solid rgba(213, 184, 255, 0.3);
+        }
+
+        .glossary-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #d4b8d9;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .glossary-item {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(213, 184, 255, 0.3);
+        }
+
+        .glossary-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .glossary-term {
+            font-weight: 600;
+            color: #9b8baa;
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .glossary-desc {
+            font-size: 0.75rem;
+            color: #b8a9c4;
+            line-height: 1.4;
         }
 
         .stretch-container {
@@ -583,7 +639,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT: MOLECULAR VIEWER -->
+            <!-- RIGHT: MOLECULAR VIEWER + GLOSSARY -->
             <div class="molecular-panel">
                 <div class="molecular-header">
                     <h3>
@@ -601,15 +657,15 @@
                 </div>
                 
                 <div class="molecular-stats">
-                    <div class="stat-item">
+                    <div class="stat-item" title="Percentage of ordered, tightly-packed polymer regions">
                         <div class="stat-value" id="crystallinity-pct">25</div>
                         <div class="stat-label">Crystallinity %</div>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" title="Weight percentage of plasticizer molecules">
                         <div class="stat-value" id="plasticizer-pct">30</div>
                         <div class="stat-label">Plasticizer wt%</div>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" title="Average number of monomer units per polymer chain">
                         <div class="stat-value" id="chain-length-stat">850</div>
                         <div class="stat-label">Avg Chain Length</div>
                     </div>
@@ -621,6 +677,43 @@
                         Loading molecular simulation...
                     </span>
                 </div>
+                
+                <!-- GLOSSARY SECTION -->
+                <div class="glossary-section">
+                    <div class="glossary-title">
+                        📚 What do these mean?
+                    </div>
+                    
+                    <div class="glossary-item">
+                        <div class="glossary-term">
+                            <span style="background: #FFB6C1; width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                            Crystallinity
+                        </div>
+                        <div class="glossary-desc">
+                            How organized the polymer chains are. <strong>High crystallinity</strong> = chains packed tightly together = <span style="color: #FFB6C1;">stiffer, stronger</span> material (like uncooked spaghetti). <strong>Low crystallinity</strong> = chains tangled randomly = more flexible.
+                        </div>
+                    </div>
+                    
+                    <div class="glossary-item">
+                        <div class="glossary-term">
+                            <span style="background: #87CEEB; width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                            Plasticizer (Glycerin)
+                        </div>
+                        <div class="glossary-desc">
+                            Small molecules that squeeze between polymer chains, pushing them apart. This reduces friction and lets chains slide past each other. <strong>More plasticizer</strong> = <span style="color: #87CEEB;">softer, stretchier</span> material (like adding oil to pasta!).
+                        </div>
+                    </div>
+                    
+                    <div class="glossary-item">
+                        <div class="glossary-term">
+                            <span style="background: #DDA0DD; width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                            Chain Length
+                        </div>
+                        <div class="glossary-desc">
+                            How long the polymer molecules are (number of linked units). <strong>Longer chains</strong> = more entanglements = <span style="color: #DDA0DD;">stronger, tougher</span> material. Vinegar (acid) snips chains shorter, making the material weaker and more brittle.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -629,8 +722,8 @@
 
     <script>
         // ============================================
-        // PLATISSERIE - WITH SOUND EFFECTS!
-        // Stirring, drying, and microwave ding!
+        // PLATISSERIE - WITH POURING + HAIRDRYER SOUNDS!
+        // Plus educational glossary
         // ============================================
 
         const canvas = document.getElementById('main-canvas');
@@ -681,6 +774,7 @@
         let currentStretch = 0;
         let stirringSoundInterval = null;
         let dryingSoundInterval = null;
+        let pouringAnimationProgress = 0;
         
         // Physics
         let puckX = 400, puckY = 250;
@@ -722,7 +816,44 @@
             osc.stop(now + 0.2);
         }
 
-        // 🥄 Stirring sound effect (rhythmic swooshing)
+        // 💧 Pouring sound effect (liquid glug-glug)
+        function playPouringSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(400, now);
+            
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.start();
+            osc.stop(now + 0.25);
+        }
+
+        function startPouringSound() {
+            const pourInterval = setInterval(() => {
+                if (cookingPhase === 1) {
+                    playPouringSound();
+                } else {
+                    clearInterval(pourInterval);
+                }
+            }, 400);
+        }
+
+        // 🥄 Stirring sound effect
         function playStirringSound() {
             if (!audioContext || audioContext.state !== 'running') return;
             
@@ -755,7 +886,7 @@
                 if (cookingPhase === 2) {
                     playStirringSound();
                 }
-            }, 300);
+            }, 250);
         }
 
         function stopStirringSound() {
@@ -765,46 +896,49 @@
             }
         }
 
-        // 💨 Drying sound effect (gentle fan/whoosh)
-        function playDryingSound() {
+        // 💨 Hairdryer sound effect!
+        function playHairdryerSound() {
             if (!audioContext || audioContext.state !== 'running') return;
             
             const now = audioContext.currentTime;
-            const noise = audioContext.createBufferSource();
-            const gain = audioContext.createGain();
-            const filter = audioContext.createBiquadFilter();
+            const duration = 0.3;
             
-            // Create white noise
-            const bufferSize = audioContext.sampleRate * 0.2;
+            // Create noise for hairdryer effect
+            const bufferSize = audioContext.sampleRate * duration;
             const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
             const data = buffer.getChannelData(0);
+            
             for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * 0.1;
+                data[i] = (Math.random() * 2 - 1) * 0.15;
             }
+            
+            const noise = audioContext.createBufferSource();
             noise.buffer = buffer;
             
+            const filter = audioContext.createBiquadFilter();
             filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(400, now);
-            filter.Q.value = 1;
+            filter.frequency.setValueAtTime(600, now);
+            filter.Q.value = 0.5;
             
-            gain.gain.setValueAtTime(0.03, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(0.06, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
             
             noise.connect(filter);
             filter.connect(gain);
             gain.connect(audioContext.destination);
             
             noise.start();
-            noise.stop(now + 0.2);
+            noise.stop(now + duration);
         }
 
         function startDryingSound() {
             if (dryingSoundInterval) clearInterval(dryingSoundInterval);
             dryingSoundInterval = setInterval(() => {
                 if (cookingPhase === 3) {
-                    playDryingSound();
+                    playHairdryerSound();
                 }
-            }, 500);
+            }, 300);
         }
 
         function stopDryingSound() {
@@ -1199,28 +1333,50 @@
             ctx.save();
             
             if (cookingPhase === 1) {
-                const pourHeight = 40 + Math.sin(Date.now() / 150) * 15;
+                // Enhanced pouring animation!
+                const time = Date.now() / 200;
+                const pourOffset = Math.sin(time) * 10;
                 
+                // Liquid stream from pitcher
                 ctx.beginPath();
-                ctx.moveTo(centerX - 80, 50);
-                ctx.lineTo(centerX - 50, centerY - pourHeight);
-                ctx.lineTo(centerX - 20, centerY - pourHeight);
-                ctx.lineTo(centerX - 50, 50);
+                ctx.moveTo(centerX - 100, 30);
+                ctx.lineTo(centerX - 70 + pourOffset, centerY - 40);
+                ctx.lineTo(centerX - 30 + pourOffset, centerY - 40);
+                ctx.lineTo(centerX - 60, 30);
                 
-                const gradient = ctx.createLinearGradient(centerX - 80, 50, centerX - 35, centerY);
-                gradient.addColorStop(0, `rgba(255, 240, 200, ${0.7})`);
-                gradient.addColorStop(1, `rgba(200, 230, 255, ${0.5})`);
+                const gradient = ctx.createLinearGradient(centerX - 100, 30, centerX - 50, centerY - 20);
+                gradient.addColorStop(0, `rgba(255, 240, 200, 0.8)`);
+                gradient.addColorStop(0.5, `rgba(200, 230, 255, 0.6)`);
+                gradient.addColorStop(1, `rgba(213, 184, 255, 0.5)`);
                 ctx.fillStyle = gradient;
                 ctx.fill();
                 
-                for (let i = 0; i < 5; i++) {
+                // Pitcher
+                ctx.beginPath();
+                ctx.rect(centerX - 120, 10, 50, 40);
+                ctx.fillStyle = '#e8d5e0';
+                ctx.fill();
+                ctx.strokeStyle = '#d4c4d9';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Splash drops
+                for (let i = 0; i < 8; i++) {
+                    const splashX = centerX - 50 + i * 12 + Math.sin(time + i) * 8;
+                    const splashY = centerY - 30 + Math.cos(time * 1.5 + i) * 12;
                     ctx.beginPath();
-                    ctx.arc(centerX - 35 + i * 10, centerY - 20 + Math.sin(Date.now()/100 + i)*10, 4, 0, Math.PI*2);
-                    ctx.fillStyle = `rgba(213, 184, 255, 0.6)`;
+                    ctx.arc(splashX, splashY, 3 + i % 3, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(200, 230, 255, ${0.4 + Math.sin(time + i) * 0.2})`;
                     ctx.fill();
                 }
                 
-                puckStatus.innerHTML = '💧 Pouring ingredients...';
+                // Liquid accumulating in bowl
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY - 5, 70 + Math.sin(time) * 10, 30, 0, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(245, 235, 220, 0.6)`;
+                ctx.fill();
+                
+                puckStatus.innerHTML = '💧 Pouring ingredients... (glug glug)';
             }
             
             if (cookingPhase === 2) {
@@ -1249,7 +1405,7 @@
                 
                 ctx.restore();
                 
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < 10; i++) {
                     const bubbleX = centerX - 40 + (i * 15) + Math.sin(Date.now()/150 + i)*10;
                     const bubbleY = centerY - 10 - (i * 3) + Math.cos(Date.now()/200 + i)*5;
                     ctx.beginPath();
@@ -1262,17 +1418,38 @@
             }
             
             if (cookingPhase === 3) {
-                for (let i = 0; i < 5; i++) {
-                    const waveY = centerY - 60 - i * 8 + Math.sin(Date.now()/100 + i)*5;
+                const time = Date.now() / 150;
+                
+                // Hairdryer!
+                ctx.beginPath();
+                ctx.rect(centerX - 150, centerY - 80, 40, 30);
+                ctx.fillStyle = '#ffb3b3';
+                ctx.fill();
+                ctx.strokeStyle = '#ff9999';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Hairdryer nozzle
+                ctx.beginPath();
+                ctx.rect(centerX - 120, centerY - 75, 20, 20);
+                ctx.fillStyle = '#d4c4d9';
+                ctx.fill();
+                
+                // Heat waves from hairdryer
+                for (let i = 0; i < 8; i++) {
+                    const waveX = centerX - 100 + i * 12 + Math.sin(time + i) * 5;
+                    const waveY = centerY - 65 - i * 3 + Math.cos(time * 1.2 + i) * 4;
+                    
                     ctx.beginPath();
-                    ctx.moveTo(centerX - 50 + i*10, waveY);
-                    ctx.lineTo(centerX - 30 + i*10, waveY - 10);
-                    ctx.lineTo(centerX - 10 + i*10, waveY);
-                    ctx.strokeStyle = `rgba(255, 200, 200, ${0.3 - i*0.05})`;
+                    ctx.moveTo(waveX, waveY);
+                    ctx.lineTo(waveX + 8, waveY - 6);
+                    ctx.lineTo(waveX + 16, waveY);
+                    ctx.strokeStyle = `rgba(255, 200, 150, ${0.4 - i * 0.04})`;
                     ctx.lineWidth = 2;
                     ctx.stroke();
                 }
                 
+                // Drying mixture
                 ctx.beginPath();
                 ctx.ellipse(centerX, centerY - 5, 85, 38, 0, 0, Math.PI * 2);
                 const dryColor = `rgb(${235 + currentRatios.vinegar/3}, ${225 - currentRatios.starch/5}, ${235})`;
@@ -1281,7 +1458,7 @@
                 ctx.fill();
                 ctx.globalAlpha = 1;
                 
-                puckStatus.innerHTML = '💨 Drying... (whoooosh)';
+                puckStatus.innerHTML = '💨 Drying with hairdryer... (whoooosh)';
             }
             
             ctx.restore();
@@ -1521,23 +1698,24 @@
                 await audioContext.resume();
             }
             
-            // Phase 1: Pouring
+            // Phase 1: Pouring with sound
             cookingPhase = 1;
-            puckStatus.innerHTML = '💧 Pouring ingredients...';
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            puckStatus.innerHTML = '💧 Pouring ingredients... (glug glug)';
+            startPouringSound();
+            await new Promise(resolve => setTimeout(resolve, 2500));
             
             // Phase 2: Mixing with sound
             cookingPhase = 2;
             puckStatus.innerHTML = '🥄 Mixing the magic... (swoosh swoosh)';
             startStirringSound();
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            await new Promise(resolve => setTimeout(resolve, 2800));
             stopStirringSound();
             
-            // Phase 3: Drying with sound
+            // Phase 3: Drying with hairdryer sound
             cookingPhase = 3;
-            puckStatus.innerHTML = '💨 Drying... (whoooosh)';
+            puckStatus.innerHTML = '💨 Drying with hairdryer... (whoooosh)';
             startDryingSound();
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 2500));
             stopDryingSound();
             
             // Done! Play ding!
@@ -1635,7 +1813,7 @@
             canvas.height = 380;
             
             molCanvas.width = document.querySelector('.molecular-panel').clientWidth - 44;
-            molCanvas.height = 250;
+            molCanvas.height = 220;
             
             if (plasticPuck && !isCooking) {
                 puckX = canvas.width / 2;
