@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🧸 Bioplastics Bakery | Cute Polymer Science</title>
+    <title>🧸 Platisserie | Bioplastics Kitchen</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
@@ -39,7 +39,7 @@
 
         h1 {
             font-weight: 600;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 5px;
             letter-spacing: -0.5px;
             background: linear-gradient(135deg, #b8a9d6, #f7b2c4, #a8d8ea);
@@ -52,15 +52,16 @@
         }
 
         h1 span {
-            font-size: 2rem;
+            font-size: 2.2rem;
         }
 
         .subtitle {
             color: #b8a9c4;
             margin-bottom: 25px;
             font-weight: 500;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             padding-left: 10px;
+            font-style: italic;
         }
 
         .main-grid {
@@ -451,10 +452,10 @@
 <body>
     <div class="bakery-container">
         <h1>
-            <span>🧸</span> Bioplastics Bakery
+            <span>🧪</span> Platisserie
             <span style="font-size: 1.8rem; margin-left: auto; opacity: 0.6;">✨</span>
         </h1>
-        <div class="subtitle">✧ where science meets sweetness ✧</div>
+        <div class="subtitle">✧ mixing sustainability and science through biobaking ✧</div>
         
         <div class="main-grid">
             <!-- LEFT PANEL: INGREDIENTS -->
@@ -628,8 +629,8 @@
 
     <script>
         // ============================================
-        // BIOPLASTICS BAKERY - ENHANCED MOLECULAR VIEW
-        // Cute colors + real-time stretch visualization
+        // PLATISSERIE - WITH SOUND EFFECTS!
+        // Stirring, drying, and microwave ding!
         // ============================================
 
         const canvas = document.getElementById('main-canvas');
@@ -677,7 +678,9 @@
         let snapThreshold = 180;
         let isSnapped = false;
         let audioContext = null;
-        let currentStretch = 0; // 0 to 1
+        let currentStretch = 0;
+        let stirringSoundInterval = null;
+        let dryingSoundInterval = null;
         
         // Physics
         let puckX = 400, puckY = 250;
@@ -717,6 +720,131 @@
             
             osc.start();
             osc.stop(now + 0.2);
+        }
+
+        // 🥄 Stirring sound effect (rhythmic swooshing)
+        function playStirringSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, now);
+            
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+            
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.start();
+            osc.stop(now + 0.15);
+        }
+
+        function startStirringSound() {
+            if (stirringSoundInterval) clearInterval(stirringSoundInterval);
+            stirringSoundInterval = setInterval(() => {
+                if (cookingPhase === 2) {
+                    playStirringSound();
+                }
+            }, 300);
+        }
+
+        function stopStirringSound() {
+            if (stirringSoundInterval) {
+                clearInterval(stirringSoundInterval);
+                stirringSoundInterval = null;
+            }
+        }
+
+        // 💨 Drying sound effect (gentle fan/whoosh)
+        function playDryingSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            const noise = audioContext.createBufferSource();
+            const gain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            // Create white noise
+            const bufferSize = audioContext.sampleRate * 0.2;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.1;
+            }
+            noise.buffer = buffer;
+            
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(400, now);
+            filter.Q.value = 1;
+            
+            gain.gain.setValueAtTime(0.03, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            noise.start();
+            noise.stop(now + 0.2);
+        }
+
+        function startDryingSound() {
+            if (dryingSoundInterval) clearInterval(dryingSoundInterval);
+            dryingSoundInterval = setInterval(() => {
+                if (cookingPhase === 3) {
+                    playDryingSound();
+                }
+            }, 500);
+        }
+
+        function stopDryingSound() {
+            if (dryingSoundInterval) {
+                clearInterval(dryingSoundInterval);
+                dryingSoundInterval = null;
+            }
+        }
+
+        // 🔔 Microwave ding sound!
+        function playDingSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            
+            // First ding
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(880, now);
+            osc1.frequency.setValueAtTime(880, now + 0.15);
+            gain1.gain.setValueAtTime(0.15, now);
+            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
+            osc1.start();
+            osc1.stop(now + 0.3);
+            
+            // Second ding (higher)
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(1175, now + 0.15);
+            osc2.frequency.setValueAtTime(1175, now + 0.3);
+            gain2.gain.setValueAtTime(0.12, now + 0.15);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.start(now + 0.15);
+            osc2.stop(now + 0.45);
         }
 
         // Calculate properties
@@ -809,7 +937,6 @@
             const numBranches = Math.floor(currentRatios.starch / 18);
             const numHBonds = Math.floor(props.crystallinity / 2.5);
             
-            // Generate chains
             for (let c = 0; c < numChains; c++) {
                 const chain = [];
                 const startY = 50 + c * 45;
@@ -830,7 +957,6 @@
                 polymerChains.push(chain);
             }
             
-            // Generate branch points
             for (let b = 0; b < numBranches; b++) {
                 if (polymerChains.length > 0) {
                     const chainIdx = Math.floor(Math.random() * polymerChains.length);
@@ -841,7 +967,6 @@
                 }
             }
             
-            // Generate glycerin molecules
             for (let g = 0; g < numGlycerin; g++) {
                 glycerinMolecules.push({
                     x: 45 + Math.random() * 270,
@@ -851,7 +976,6 @@
                 });
             }
             
-            // Generate hydrogen bonds
             for (let h = 0; h < numHBonds; h++) {
                 if (polymerChains.length >= 2) {
                     const c1 = Math.floor(Math.random() * polymerChains.length);
@@ -873,18 +997,15 @@
         function drawMolecularModel() {
             molCtx.clearRect(0, 0, molCanvas.width, molCanvas.height);
             
-            // Calculate stretch offset for chains
             const stretchOffset = isDragging ? currentStretch * 15 : 0;
             const stretchAngle = isDragging ? Math.atan2(grabPoint.y, grabPoint.x) : 0;
             
-            // Draw hydrogen bonds
             hydrogenBonds.forEach(bond => {
                 let p1x = bond.p1.x;
                 let p1y = bond.p1.y;
                 let p2x = bond.p2.x;
                 let p2y = bond.p2.y;
                 
-                // Stretch hydrogen bonds
                 if (isDragging && !isSnapped) {
                     const dx = p2x - p1x;
                     const dy = p2y - p1y;
@@ -907,7 +1028,6 @@
             });
             molCtx.setLineDash([]);
             
-            // Draw chains with cute colors and stretch effect
             polymerChains.forEach((chain, idx) => {
                 if (chain.length < 2) return;
                 
@@ -934,7 +1054,6 @@
                     molCtx.lineTo(point.x, point.y);
                 }
                 
-                // Cute pink chains!
                 const gradient = molCtx.createLinearGradient(30, 50, 300, 200);
                 gradient.addColorStop(0, '#FFB6C1');
                 gradient.addColorStop(1, '#FFC0CB');
@@ -943,7 +1062,6 @@
                 molCtx.lineWidth = isSnapped ? 3 : 5;
                 molCtx.stroke();
                 
-                // Draw monomers (cute circles)
                 chain.forEach((point, i) => {
                     let x = point.x;
                     let y = point.y;
@@ -966,7 +1084,6 @@
                     molCtx.lineWidth = 1.5;
                     molCtx.stroke();
                     
-                    // Cute little shine
                     molCtx.beginPath();
                     molCtx.arc(x-1, y-1, 1.5, 0, Math.PI * 2);
                     molCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
@@ -974,7 +1091,6 @@
                 });
             });
             
-            // Draw branch points
             branchPoints.forEach(point => {
                 let x = point.x;
                 let y = point.y;
@@ -993,7 +1109,6 @@
                 molCtx.stroke();
             });
             
-            // Draw glycerin molecules with stretch effect
             glycerinMolecules.forEach((mol, i) => {
                 const floatY = Math.sin(Date.now() / 400 + mol.offset) * 4;
                 let x = mol.x;
@@ -1018,7 +1133,6 @@
                 molCtx.lineWidth = 2;
                 molCtx.stroke();
                 
-                // Cute OH groups
                 molCtx.fillStyle = '#ADD8E6';
                 molCtx.beginPath();
                 molCtx.arc(x - 3, y - 3, 2.5, 0, Math.PI * 2);
@@ -1026,14 +1140,12 @@
                 molCtx.arc(x, y + 4, 2.5, 0, Math.PI * 2);
                 molCtx.fill();
                 
-                // Sparkle on glycerin
                 molCtx.beginPath();
                 molCtx.arc(x-1, y-1, 1, 0, Math.PI * 2);
                 molCtx.fillStyle = 'white';
                 molCtx.fill();
             });
             
-            // If snapped, draw crack lines through chains
             if (isSnapped) {
                 molCtx.beginPath();
                 molCtx.moveTo(80, 60);
@@ -1049,7 +1161,6 @@
             }
         }
 
-        // Draw bowl and animations (CUTE VERSION - unchanged)
         function drawBowl() {
             ctx.save();
             
@@ -1147,7 +1258,7 @@
                     ctx.fill();
                 }
                 
-                puckStatus.innerHTML = '🥄 Mixing the magic...';
+                puckStatus.innerHTML = '🥄 Mixing the magic... (swoosh swoosh)';
             }
             
             if (cookingPhase === 3) {
@@ -1170,7 +1281,7 @@
                 ctx.fill();
                 ctx.globalAlpha = 1;
                 
-                puckStatus.innerHTML = '💨 Drying... almost ready!';
+                puckStatus.innerHTML = '💨 Drying... (whoooosh)';
             }
             
             ctx.restore();
@@ -1213,7 +1324,6 @@
             ctx.fill();
             
             if (!isSnapped) {
-                // CUTE FACE
                 ctx.fillStyle = '#b8a9c4';
                 ctx.beginPath();
                 ctx.arc(-15, -5, 5, 0, Math.PI * 2);
@@ -1238,7 +1348,6 @@
                 ctx.arc(0, 10, 12, 0.1, Math.PI - 0.1);
                 ctx.stroke();
             } else {
-                // SAD/CRACKED FACE
                 ctx.beginPath();
                 ctx.strokeStyle = '#ff9999';
                 ctx.lineWidth = 3;
@@ -1396,7 +1505,7 @@
             puckRotation = 0;
             isSnapped = false;
             currentStretch = 0;
-            puckStatus.innerHTML = '✨ Fresh bioplastic is ready! Grab and stretch gently ✨';
+            puckStatus.innerHTML = '🔔 Ding! Your bioplastic is ready! Grab and stretch ✨';
             puckStatus.style.color = '#9b8baa';
         }
 
@@ -1407,19 +1516,36 @@
             cookBtn.disabled = true;
             plasticPuck = null;
             
+            initAudio();
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+            
+            // Phase 1: Pouring
             cookingPhase = 1;
+            puckStatus.innerHTML = '💧 Pouring ingredients...';
             await new Promise(resolve => setTimeout(resolve, 2000));
             
+            // Phase 2: Mixing with sound
             cookingPhase = 2;
+            puckStatus.innerHTML = '🥄 Mixing the magic... (swoosh swoosh)';
+            startStirringSound();
             await new Promise(resolve => setTimeout(resolve, 2500));
+            stopStirringSound();
             
+            // Phase 3: Drying with sound
             cookingPhase = 3;
+            puckStatus.innerHTML = '💨 Drying... (whoooosh)';
+            startDryingSound();
             await new Promise(resolve => setTimeout(resolve, 2000));
+            stopDryingSound();
             
-            isCooking = false;
+            // Done! Play ding!
             cookingPhase = 0;
+            isCooking = false;
             cookBtn.disabled = false;
             
+            playDingSound();
             createPlastic();
             updateProperties();
         }
