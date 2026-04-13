@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🧸 Platisserie | Bioplastics Kitchen</title>
+    <title>🧸 Plastisserie | Bioplastics Kitchen</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
@@ -240,7 +240,7 @@
             color: #9b8baa;
         }
 
-        .submit-contract-btn {
+        .start-contract-btn {
             width: 100%;
             padding: 18px;
             background: linear-gradient(135deg, #a8e6cf, #78c7b0);
@@ -252,6 +252,32 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 8px 20px rgba(168, 230, 207, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            font-family: 'Quicksand', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .start-contract-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .start-contract-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .submit-contract-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #d4b8d9, #f7b2c4);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(213, 184, 255, 0.3);
             border: 2px solid rgba(255, 255, 255, 0.5);
             font-family: 'Quicksand', sans-serif;
         }
@@ -413,6 +439,9 @@
         #starch-slider::-webkit-slider-thumb { background: #ffd4a8; }
         #glycerin-slider::-webkit-slider-thumb { background: #b8dff0; }
         #vinegar-slider::-webkit-slider-thumb { background: #ffc4c4; }
+        #game-starch-slider::-webkit-slider-thumb { background: #ffd4a8; }
+        #game-glycerin-slider::-webkit-slider-thumb { background: #b8dff0; }
+        #game-vinegar-slider::-webkit-slider-thumb { background: #ffc4c4; }
 
         .cook-btn, .molecular-btn {
             width: 100%;
@@ -747,6 +776,13 @@
             margin-top: 12px;
         }
 
+        .game-hint-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(168, 230, 207, 0.1);
+            border-radius: 20px;
+        }
+
         @keyframes snapAnimation {
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
@@ -795,7 +831,11 @@
                         <button class="level-btn" data-level="3">☕ Level 3</button>
                     </div>
                     
-                    <button class="submit-contract-btn" id="submitContractBtn">
+                    <button class="start-contract-btn" id="startContractBtn">
+                        ▶ Start 30s Challenge!
+                    </button>
+                    
+                    <button class="submit-contract-btn" id="submitContractBtn" disabled>
                         🔬 Submit Bioplastic
                     </button>
                     
@@ -844,7 +884,7 @@
                         <input type="range" id="game-vinegar-slider" min="0" max="100" value="5" step="1">
                     </div>
                     
-                    <div style="margin-top: 20px; padding: 15px; background: rgba(168, 230, 207, 0.1); border-radius: 20px;">
+                    <div class="game-hint-box">
                         <div style="color: #a8e6cf; font-size: 0.9rem; font-weight: 600;">💡 Hint</div>
                         <div style="color: #b8a9c4; font-size: 0.85rem;" id="gameHint">
                             Flexible materials need more glycerin!
@@ -856,7 +896,7 @@
         
         <div class="header-row">
             <h1>
-                <span>🧪</span> Platisserie
+                <span>🧪</span> Plastisserie
                 <span style="font-size: 1.8rem; opacity: 0.6;">✨</span>
             </h1>
             <button class="game-btn" id="enterGameBtn">
@@ -1074,7 +1114,7 @@
 
     <script>
         // ============================================
-        // PLATISSERIE - WITH CONTRACT GAME MODE!
+        // PLASTISSERIE - WITH CONTRACT MODE + ALL ANIMATIONS!
         // ============================================
 
         const canvas = document.getElementById('main-canvas');
@@ -1108,6 +1148,7 @@
         const contractIcon = document.getElementById('contractIcon');
         const contractText = document.getElementById('contractText');
         const targetProperties = document.getElementById('targetProperties');
+        const startContractBtn = document.getElementById('startContractBtn');
         const submitContractBtn = document.getElementById('submitContractBtn');
         const gameResult = document.getElementById('gameResult');
         const gameHint = document.getElementById('gameHint');
@@ -1144,14 +1185,28 @@
         let currentStretch = 0;
         let stirringSoundInterval = null;
         let dryingSoundInterval = null;
+        let pouringSoundInterval = null;
         
         // Game state
         let gameActive = false;
         let currentLevel = 1;
         let gameTimerInterval = null;
         let timeLeft = 30;
+        let gameInProgress = false;
         let completedLevels = [false, false, false];
         
+        // Physics
+        let puckX = 400, puckY = 250;
+        let puckVX = 0, puckVY = 0;
+        let puckRotation = 0;
+        const PUCK_SIZE = 85;
+        
+        // Molecular model
+        let polymerChains = [];
+        let branchPoints = [];
+        let glycerinMolecules = [];
+        let hydrogenBonds = [];
+
         // Level definitions
         const levels = {
             1: {
@@ -1182,18 +1237,6 @@
                 tolerance: 12
             }
         };
-        
-        // Physics
-        let puckX = 400, puckY = 250;
-        let puckVX = 0, puckVY = 0;
-        let puckRotation = 0;
-        const PUCK_SIZE = 85;
-        
-        // Molecular model
-        let polymerChains = [];
-        let branchPoints = [];
-        let glycerinMolecules = [];
-        let hydrogenBonds = [];
 
         // Initialize audio
         function initAudio() {
@@ -1221,6 +1264,92 @@
             
             osc.start();
             osc.stop(now + 0.2);
+        }
+
+        function playPouringSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(400, now);
+            
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.start();
+            osc.stop(now + 0.25);
+        }
+
+        function playStirringSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, now);
+            
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+            
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.start();
+            osc.stop(now + 0.15);
+        }
+
+        function playHairdryerSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            const duration = 0.3;
+            
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.15;
+            }
+            
+            const noise = audioContext.createBufferSource();
+            noise.buffer = buffer;
+            
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(600, now);
+            filter.Q.value = 0.5;
+            
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(0.06, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            noise.start();
+            noise.stop(now + duration);
         }
 
         function playDingSound() {
@@ -1399,9 +1528,6 @@
         function drawMolecularModel() {
             molCtx.clearRect(0, 0, molCanvas.width, molCanvas.height);
             
-            const stretchOffset = isDragging ? currentStretch * 15 : 0;
-            const stretchAngle = isDragging ? Math.atan2(grabPoint.y, grabPoint.x) : 0;
-            
             hydrogenBonds.forEach(bond => {
                 molCtx.beginPath();
                 molCtx.moveTo(bond.p1.x, bond.p1.y);
@@ -1413,7 +1539,7 @@
             });
             molCtx.setLineDash([]);
             
-            polymerChains.forEach((chain, idx) => {
+            polymerChains.forEach((chain) => {
                 if (chain.length < 2) return;
                 
                 molCtx.beginPath();
@@ -1447,7 +1573,7 @@
                 });
             });
             
-            glycerinMolecules.forEach((mol, i) => {
+            glycerinMolecules.forEach((mol) => {
                 const floatY = Math.sin(Date.now() / 400 + mol.offset) * 4;
                 
                 molCtx.beginPath();
@@ -1501,6 +1627,134 @@
             
             ctx.shadowBlur = 0;
             ctx.shadowOffsetY = 0;
+            ctx.restore();
+        }
+
+        function drawCookingAnimation() {
+            if (!isCooking) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2 + 25;
+            
+            ctx.save();
+            
+            if (cookingPhase === 1) {
+                // Pouring animation
+                const time = Date.now() / 200;
+                const pourOffset = Math.sin(time) * 10;
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX - 100, 30);
+                ctx.lineTo(centerX - 70 + pourOffset, centerY - 40);
+                ctx.lineTo(centerX - 30 + pourOffset, centerY - 40);
+                ctx.lineTo(centerX - 60, 30);
+                
+                const gradient = ctx.createLinearGradient(centerX - 100, 30, centerX - 50, centerY - 20);
+                gradient.addColorStop(0, `rgba(255, 240, 200, 0.8)`);
+                gradient.addColorStop(0.5, `rgba(200, 230, 255, 0.6)`);
+                gradient.addColorStop(1, `rgba(213, 184, 255, 0.5)`);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.rect(centerX - 120, 10, 50, 40);
+                ctx.fillStyle = '#e8d5e0';
+                ctx.fill();
+                ctx.strokeStyle = '#d4c4d9';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                for (let i = 0; i < 8; i++) {
+                    const splashX = centerX - 50 + i * 12 + Math.sin(time + i) * 8;
+                    const splashY = centerY - 30 + Math.cos(time * 1.5 + i) * 12;
+                    ctx.beginPath();
+                    ctx.arc(splashX, splashY, 3 + i % 3, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(200, 230, 255, ${0.4 + Math.sin(time + i) * 0.2})`;
+                    ctx.fill();
+                }
+                
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY - 5, 70 + Math.sin(time) * 10, 30, 0, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(245, 235, 220, 0.6)`;
+                ctx.fill();
+            }
+            
+            if (cookingPhase === 2) {
+                // Mixing animation
+                const mixAngle = Date.now() / 200;
+                
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY - 5, 95, 42, 0, 0, Math.PI * 2);
+                const mixtureColor = `rgb(${245 + currentRatios.vinegar/2}, ${235 - currentRatios.starch/4}, ${245})`;
+                ctx.fillStyle = mixtureColor;
+                ctx.globalAlpha = 0.7;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                
+                ctx.translate(centerX, centerY - 20);
+                ctx.rotate(Math.sin(mixAngle) * 0.5);
+                
+                ctx.beginPath();
+                ctx.rect(-4, -60, 8, 80);
+                ctx.fillStyle = '#d4c4d9';
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.ellipse(0, 20, 25, 10, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#c4b4c9';
+                ctx.fill();
+                
+                ctx.restore();
+                
+                for (let i = 0; i < 10; i++) {
+                    const bubbleX = centerX - 40 + (i * 15) + Math.sin(Date.now()/150 + i)*10;
+                    const bubbleY = centerY - 10 - (i * 3) + Math.cos(Date.now()/200 + i)*5;
+                    ctx.beginPath();
+                    ctx.arc(bubbleX, bubbleY, 3 + i%3, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fill();
+                }
+            }
+            
+            if (cookingPhase === 3) {
+                // Drying animation with hairdryer
+                const time = Date.now() / 150;
+                
+                ctx.beginPath();
+                ctx.rect(centerX - 150, centerY - 80, 40, 30);
+                ctx.fillStyle = '#ffb3b3';
+                ctx.fill();
+                ctx.strokeStyle = '#ff9999';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.rect(centerX - 120, centerY - 75, 20, 20);
+                ctx.fillStyle = '#d4c4d9';
+                ctx.fill();
+                
+                for (let i = 0; i < 8; i++) {
+                    const waveX = centerX - 100 + i * 12 + Math.sin(time + i) * 5;
+                    const waveY = centerY - 65 - i * 3 + Math.cos(time * 1.2 + i) * 4;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(waveX, waveY);
+                    ctx.lineTo(waveX + 8, waveY - 6);
+                    ctx.lineTo(waveX + 16, waveY);
+                    ctx.strokeStyle = `rgba(255, 200, 150, ${0.4 - i * 0.04})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY - 5, 85, 38, 0, 0, Math.PI * 2);
+                const dryColor = `rgb(${235 + currentRatios.vinegar/3}, ${225 - currentRatios.starch/5}, ${235})`;
+                ctx.fillStyle = dryColor;
+                ctx.globalAlpha = 0.8;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+            
             ctx.restore();
         }
 
@@ -1727,17 +1981,26 @@
                 await audioContext.resume();
             }
             
+            // Phase 1: Pouring
             cookingPhase = 1;
-            puckStatus.innerHTML = '💧 Pouring ingredients...';
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            puckStatus.innerHTML = '💧 Pouring ingredients... (glug glug)';
+            pouringSoundInterval = setInterval(() => { if (cookingPhase === 1) playPouringSound(); }, 400);
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            clearInterval(pouringSoundInterval);
             
+            // Phase 2: Mixing
             cookingPhase = 2;
-            puckStatus.innerHTML = '🥄 Mixing the magic...';
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            puckStatus.innerHTML = '🥄 Mixing the magic... (swoosh swoosh)';
+            stirringSoundInterval = setInterval(() => { if (cookingPhase === 2) playStirringSound(); }, 250);
+            await new Promise(resolve => setTimeout(resolve, 2800));
+            clearInterval(stirringSoundInterval);
             
+            // Phase 3: Drying
             cookingPhase = 3;
-            puckStatus.innerHTML = '💨 Drying...';
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            puckStatus.innerHTML = '💨 Drying with hairdryer... (whoooosh)';
+            dryingSoundInterval = setInterval(() => { if (cookingPhase === 3) playHairdryerSound(); }, 300);
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            clearInterval(dryingSoundInterval);
             
             cookingPhase = 0;
             isCooking = false;
@@ -1790,7 +2053,6 @@
             contractText.textContent = levelData.title;
             gameHint.textContent = levelData.hint;
             
-            // Update target properties display
             const target = levelData.target;
             targetProperties.innerHTML = `
                 <div class="target-item">
@@ -1807,7 +2069,6 @@
                 </div>
             `;
             
-            // Update level buttons
             document.querySelectorAll('.level-btn').forEach((btn, idx) => {
                 btn.classList.remove('active');
                 if (completedLevels[idx]) {
@@ -1816,15 +2077,27 @@
             });
             document.querySelector(`[data-level="${level}"]`).classList.add('active');
             
-            // Reset timer
+            // Reset game state
+            timeLeft = 30;
+            gameTimer.textContent = `${timeLeft}s`;
+            gameInProgress = false;
+            submitContractBtn.disabled = true;
+            startContractBtn.disabled = false;
+            gameResult.style.display = 'none';
+            
+            if (gameTimerInterval) {
+                clearInterval(gameTimerInterval);
+                gameTimerInterval = null;
+            }
+        }
+
+        function startGameChallenge() {
+            gameInProgress = true;
+            startContractBtn.disabled = true;
+            submitContractBtn.disabled = false;
             timeLeft = 30;
             gameTimer.textContent = `${timeLeft}s`;
             
-            // Hide previous result
-            gameResult.style.display = 'none';
-        }
-
-        function startGameTimer() {
             if (gameTimerInterval) clearInterval(gameTimerInterval);
             
             gameTimerInterval = setInterval(() => {
@@ -1834,21 +2107,20 @@
                 if (timeLeft <= 0) {
                     clearInterval(gameTimerInterval);
                     gameTimerInterval = null;
+                    gameInProgress = false;
+                    submitContractBtn.disabled = true;
+                    startContractBtn.disabled = false;
                     
-                    // Time's up!
                     gameResult.className = 'game-result fail';
                     gameResult.innerHTML = `⏰ Time's up! Try again!`;
                     gameResult.style.display = 'block';
-                    submitContractBtn.disabled = true;
-                    
-                    setTimeout(() => {
-                        submitContractBtn.disabled = false;
-                    }, 2000);
                 }
             }, 1000);
         }
 
         function checkContract() {
+            if (!gameInProgress) return;
+            
             const ratios = {
                 starch: parseInt(gameStarchSlider.value),
                 glycerin: parseInt(gameGlycerinSlider.value),
@@ -1870,6 +2142,10 @@
                 gameTimerInterval = null;
             }
             
+            gameInProgress = false;
+            submitContractBtn.disabled = true;
+            startContractBtn.disabled = false;
+            
             if (success) {
                 completedLevels[currentLevel - 1] = true;
                 
@@ -1879,10 +2155,8 @@
                 
                 playSuccessSound();
                 
-                // Update level button
                 document.querySelector(`[data-level="${currentLevel}"]`).classList.add('completed');
                 
-                // Update main kitchen ratios to match successful recipe
                 starchSlider.value = ratios.starch;
                 glycerinSlider.value = ratios.glycerin;
                 vinegarSlider.value = ratios.vinegar;
@@ -1898,18 +2172,12 @@
                 gameResult.innerHTML = `❌ Not quite right!<br><small>${failReasons.join('<br>')}</small>`;
                 gameResult.style.display = 'block';
             }
-            
-            submitContractBtn.disabled = true;
-            setTimeout(() => {
-                submitContractBtn.disabled = false;
-            }, 2000);
         }
 
         function enterGameMode() {
             gameActive = true;
             gameOverlay.classList.add('active');
             
-            // Sync game sliders with main kitchen
             gameStarchSlider.value = currentRatios.starch;
             gameGlycerinSlider.value = currentRatios.glycerin;
             gameVinegarSlider.value = currentRatios.vinegar;
@@ -1939,6 +2207,10 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             drawBowl();
+            
+            if (isCooking) {
+                drawCookingAnimation();
+            }
             
             if (plasticPuck && !isCooking) {
                 updatePhysics();
@@ -1993,17 +2265,11 @@
             btn.addEventListener('click', () => {
                 const level = parseInt(btn.dataset.level);
                 loadLevel(level);
-                gameResult.style.display = 'none';
-                submitContractBtn.disabled = false;
             });
         });
         
-        submitContractBtn.addEventListener('click', () => {
-            if (!gameTimerInterval) {
-                startGameTimer();
-            }
-            checkContract();
-        });
+        startContractBtn.addEventListener('click', startGameChallenge);
+        submitContractBtn.addEventListener('click', checkContract);
         
         function handleResize() {
             const container = document.querySelector('.animation-area');
