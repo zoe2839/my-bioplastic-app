@@ -35,6 +35,7 @@
             box-shadow: 0 20px 60px rgba(213, 184, 255, 0.15),
                         0 5px 20px rgba(255, 218, 233, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.8);
+            position: relative;
         }
 
         h1 {
@@ -51,8 +52,33 @@
             gap: 15px;
         }
 
-        h1 span {
-            font-size: 2.2rem;
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #f7b2c4, #ffd4a8);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(247, 178, 196, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(247, 178, 196, 0.4);
         }
 
         .subtitle {
@@ -68,6 +94,234 @@
             display: grid;
             grid-template-columns: 340px 1fr 380px;
             gap: 20px;
+        }
+
+        /* GAME MODE OVERLAY */
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 248, 240, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 40px;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            border: 3px solid rgba(247, 178, 196, 0.5);
+        }
+
+        .game-overlay.active {
+            display: flex;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f7b2c4, #ffd4a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .exit-game-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(213, 184, 255, 0.4);
+            border-radius: 30px;
+            color: #9b8baa;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .exit-game-btn:hover {
+            background: white;
+            border-color: #f7b2c4;
+        }
+
+        .game-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            flex: 1;
+        }
+
+        .contract-panel {
+            background: linear-gradient(135deg, rgba(255, 245, 245, 0.9), rgba(255, 250, 240, 0.9));
+            border-radius: 35px;
+            padding: 30px;
+            border: 2px solid rgba(247, 178, 196, 0.3);
+        }
+
+        .contract-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .level-badge {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #d4b8d9, #f7b2c4);
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .timer {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 30px;
+            color: #ffb3b3;
+            font-weight: 700;
+            font-size: 1.5rem;
+            border: 2px solid rgba(255, 180, 180, 0.4);
+            margin-left: auto;
+        }
+
+        .contract-description {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(255, 200, 220, 0.4);
+        }
+
+        .contract-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .contract-text {
+            font-size: 1.2rem;
+            color: #7b6b8a;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .target-properties {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .target-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(213, 184, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .target-label {
+            font-size: 0.7rem;
+            color: #c4b5d4;
+            text-transform: uppercase;
+        }
+
+        .target-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #9b8baa;
+        }
+
+        .submit-contract-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #a8e6cf, #78c7b0);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(168, 230, 207, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .submit-contract-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .submit-contract-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .game-sliders-panel {
+            background: linear-gradient(135deg, rgba(255, 248, 240, 0.9), rgba(255, 245, 245, 0.9));
+            border-radius: 35px;
+            padding: 30px;
+            border: 2px solid rgba(255, 220, 240, 0.6);
+        }
+
+        .level-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .level-btn {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border: 2px solid rgba(213, 184, 255, 0.3);
+            border-radius: 20px;
+            color: #9b8baa;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .level-btn.active {
+            background: linear-gradient(135deg, #f7b2c4, #ffd4a8);
+            border-color: transparent;
+            color: white;
+        }
+
+        .level-btn.completed {
+            background: linear-gradient(135deg, #a8e6cf, #78c7b0);
+            border-color: transparent;
+            color: white;
+        }
+
+        .game-result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .game-result.success {
+            background: rgba(168, 230, 207, 0.2);
+            border: 2px solid #a8e6cf;
+            color: #5fa88d;
+        }
+
+        .game-result.fail {
+            background: rgba(255, 180, 180, 0.2);
+            border: 2px solid #ffb3b3;
+            color: #ff9999;
         }
 
         /* INGREDIENTS PANEL */
@@ -502,15 +756,113 @@
             .main-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .game-content {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="bakery-container">
-        <h1>
-            <span>🧪</span> Platisserie
-            <span style="font-size: 1.8rem; margin-left: auto; opacity: 0.6;">✨</span>
-        </h1>
+        <!-- GAME MODE OVERLAY -->
+        <div class="game-overlay" id="gameOverlay">
+            <div class="game-header">
+                <div class="game-title">📋 Contract Mode</div>
+                <button class="exit-game-btn" id="exitGameBtn">✕ Exit to Kitchen</button>
+            </div>
+            
+            <div class="game-content">
+                <div class="contract-panel">
+                    <div class="contract-header">
+                        <span class="level-badge" id="currentLevelBadge">Level 1</span>
+                        <span class="timer" id="gameTimer">30s</span>
+                    </div>
+                    
+                    <div class="contract-description" id="contractDescription">
+                        <div class="contract-icon" id="contractIcon">🥪</div>
+                        <div class="contract-text" id="contractText">
+                            Create a flexible sandwich wrap
+                        </div>
+                        <div class="target-properties" id="targetProperties">
+                            <!-- Dynamically filled -->
+                        </div>
+                    </div>
+                    
+                    <div class="level-selector">
+                        <button class="level-btn active" data-level="1">🥪 Level 1</button>
+                        <button class="level-btn" data-level="2">🥄 Level 2</button>
+                        <button class="level-btn" data-level="3">☕ Level 3</button>
+                    </div>
+                    
+                    <button class="submit-contract-btn" id="submitContractBtn">
+                        🔬 Submit Bioplastic
+                    </button>
+                    
+                    <div class="game-result" id="gameResult"></div>
+                </div>
+                
+                <div class="game-sliders-panel">
+                    <h3 style="color: #d4b8d9; margin-bottom: 20px;">🎮 Adjust Your Recipe</h3>
+                    
+                    <div class="ingredient-card">
+                        <div class="ingredient-header">
+                            <div class="ingredient-name">
+                                <div class="icon starch-icon">🌽</div>
+                                <span>Corn Starch</span>
+                            </div>
+                            <div class="value-display">
+                                <span id="game-starch-value">50</span><span class="unit">g</span>
+                            </div>
+                        </div>
+                        <input type="range" id="game-starch-slider" min="0" max="100" value="50" step="1">
+                    </div>
+
+                    <div class="ingredient-card">
+                        <div class="ingredient-header">
+                            <div class="ingredient-name">
+                                <div class="icon glycerin-icon">💧</div>
+                                <span>Glycerin</span>
+                            </div>
+                            <div class="value-display">
+                                <span id="game-glycerin-value">45</span><span class="unit">ml</span>
+                            </div>
+                        </div>
+                        <input type="range" id="game-glycerin-slider" min="0" max="100" value="45" step="1">
+                    </div>
+
+                    <div class="ingredient-card">
+                        <div class="ingredient-header">
+                            <div class="ingredient-name">
+                                <div class="icon vinegar-icon">🍋</div>
+                                <span>Vinegar</span>
+                            </div>
+                            <div class="value-display">
+                                <span id="game-vinegar-value">5</span><span class="unit">ml</span>
+                            </div>
+                        </div>
+                        <input type="range" id="game-vinegar-slider" min="0" max="100" value="5" step="1">
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(168, 230, 207, 0.1); border-radius: 20px;">
+                        <div style="color: #a8e6cf; font-size: 0.9rem; font-weight: 600;">💡 Hint</div>
+                        <div style="color: #b8a9c4; font-size: 0.85rem;" id="gameHint">
+                            Flexible materials need more glycerin!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-row">
+            <h1>
+                <span>🧪</span> Platisserie
+                <span style="font-size: 1.8rem; opacity: 0.6;">✨</span>
+            </h1>
+            <button class="game-btn" id="enterGameBtn">
+                🎮 Contract Mode
+            </button>
+        </div>
         <div class="subtitle">✧ mixing sustainability and science through biobaking ✧</div>
         
         <div class="main-grid">
@@ -690,7 +1042,7 @@
                             Crystallinity
                         </div>
                         <div class="glossary-desc">
-                            How organized the polymer chains are. <strong>High crystallinity</strong> = chains packed tightly together = <span style="color: #FFB6C1;">stiffer, stronger</span> material (like uncooked spaghetti). <strong>Low crystallinity</strong> = chains tangled randomly = more flexible.
+                            How organized the polymer chains are. <strong>High crystallinity</strong> = chains packed tightly together = <span style="color: #FFB6C1;">stiffer, stronger</span> material.
                         </div>
                     </div>
                     
@@ -700,7 +1052,7 @@
                             Plasticizer (Glycerin)
                         </div>
                         <div class="glossary-desc">
-                            Small molecules that squeeze between polymer chains, pushing them apart. This reduces friction and lets chains slide past each other. <strong>More plasticizer</strong> = <span style="color: #87CEEB;">softer, stretchier</span> material (like adding oil to pasta!).
+                            Small molecules that push chains apart. <strong>More plasticizer</strong> = <span style="color: #87CEEB;">softer, stretchier</span> material.
                         </div>
                     </div>
                     
@@ -710,7 +1062,7 @@
                             Chain Length
                         </div>
                         <div class="glossary-desc">
-                            How long the polymer molecules are (number of linked units). <strong>Longer chains</strong> = more entanglements = <span style="color: #DDA0DD;">stronger, tougher</span> material. Vinegar (acid) snips chains shorter, making the material weaker and more brittle.
+                            How long polymer molecules are. <strong>Longer chains</strong> = <span style="color: #DDA0DD;">stronger, tougher</span> material.
                         </div>
                     </div>
                 </div>
@@ -722,8 +1074,7 @@
 
     <script>
         // ============================================
-        // PLATISSERIE - WITH POURING + HAIRDRYER SOUNDS!
-        // Plus educational glossary
+        // PLATISSERIE - WITH CONTRACT GAME MODE!
         // ============================================
 
         const canvas = document.getElementById('main-canvas');
@@ -741,6 +1092,25 @@
         const cookBtn = document.getElementById('cook-btn');
         const resetBtn = document.getElementById('reset-btn');
         const puckStatus = document.getElementById('puck-status');
+        
+        // Game UI Elements
+        const gameOverlay = document.getElementById('gameOverlay');
+        const enterGameBtn = document.getElementById('enterGameBtn');
+        const exitGameBtn = document.getElementById('exitGameBtn');
+        const gameStarchSlider = document.getElementById('game-starch-slider');
+        const gameGlycerinSlider = document.getElementById('game-glycerin-slider');
+        const gameVinegarSlider = document.getElementById('game-vinegar-slider');
+        const gameStarchValue = document.getElementById('game-starch-value');
+        const gameGlycerinValue = document.getElementById('game-glycerin-value');
+        const gameVinegarValue = document.getElementById('game-vinegar-value');
+        const currentLevelBadge = document.getElementById('currentLevelBadge');
+        const gameTimer = document.getElementById('gameTimer');
+        const contractIcon = document.getElementById('contractIcon');
+        const contractText = document.getElementById('contractText');
+        const targetProperties = document.getElementById('targetProperties');
+        const submitContractBtn = document.getElementById('submitContractBtn');
+        const gameResult = document.getElementById('gameResult');
+        const gameHint = document.getElementById('gameHint');
         
         // Property displays
         const stiffnessValue = document.getElementById('stiffness-value');
@@ -774,7 +1144,44 @@
         let currentStretch = 0;
         let stirringSoundInterval = null;
         let dryingSoundInterval = null;
-        let pouringAnimationProgress = 0;
+        
+        // Game state
+        let gameActive = false;
+        let currentLevel = 1;
+        let gameTimerInterval = null;
+        let timeLeft = 30;
+        let completedLevels = [false, false, false];
+        
+        // Level definitions
+        const levels = {
+            1: {
+                name: 'Level 1',
+                icon: '🥪',
+                title: 'Flexible Sandwich Wrap',
+                description: 'Create a flexible, stretchy wrap for sandwiches. Needs to be soft and bendable!',
+                hint: 'Flexible materials need more glycerin (plasticizer)! Try high glycerin, low vinegar.',
+                target: { stiffness: 40, elasticity: 70, tearStrength: 50 },
+                tolerance: 15
+            },
+            2: {
+                name: 'Level 2',
+                icon: '🥄',
+                title: 'Rigid Biodegradable Spoon',
+                description: 'Create a strong, rigid spoon that won\'t bend when scooping.',
+                hint: 'Rigid materials need more starch and less glycerin!',
+                target: { stiffness: 75, elasticity: 30, tearStrength: 70 },
+                tolerance: 15
+            },
+            3: {
+                name: 'Level 3',
+                icon: '☕',
+                title: 'Heat-Resistant Coffee Lid',
+                description: 'Create a stiff, heat-resistant lid that maintains structure.',
+                hint: 'Heat resistance needs high crystallinity! More starch, moderate glycerin.',
+                target: { stiffness: 70, elasticity: 40, tearStrength: 65 },
+                tolerance: 12
+            }
+        };
         
         // Physics
         let puckX = 400, puckY = 250;
@@ -816,150 +1223,15 @@
             osc.stop(now + 0.2);
         }
 
-        // 💧 Pouring sound effect (liquid glug-glug)
-        function playPouringSound() {
-            if (!audioContext || audioContext.state !== 'running') return;
-            
-            const now = audioContext.currentTime;
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            const filter = audioContext.createBiquadFilter();
-            
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
-            
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(400, now);
-            
-            gain.gain.setValueAtTime(0.08, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-            
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioContext.destination);
-            
-            osc.start();
-            osc.stop(now + 0.25);
-        }
-
-        function startPouringSound() {
-            const pourInterval = setInterval(() => {
-                if (cookingPhase === 1) {
-                    playPouringSound();
-                } else {
-                    clearInterval(pourInterval);
-                }
-            }, 400);
-        }
-
-        // 🥄 Stirring sound effect
-        function playStirringSound() {
-            if (!audioContext || audioContext.state !== 'running') return;
-            
-            const now = audioContext.currentTime;
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            const filter = audioContext.createBiquadFilter();
-            
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(200, now);
-            osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
-            
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(800, now);
-            
-            gain.gain.setValueAtTime(0.05, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-            
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioContext.destination);
-            
-            osc.start();
-            osc.stop(now + 0.15);
-        }
-
-        function startStirringSound() {
-            if (stirringSoundInterval) clearInterval(stirringSoundInterval);
-            stirringSoundInterval = setInterval(() => {
-                if (cookingPhase === 2) {
-                    playStirringSound();
-                }
-            }, 250);
-        }
-
-        function stopStirringSound() {
-            if (stirringSoundInterval) {
-                clearInterval(stirringSoundInterval);
-                stirringSoundInterval = null;
-            }
-        }
-
-        // 💨 Hairdryer sound effect!
-        function playHairdryerSound() {
-            if (!audioContext || audioContext.state !== 'running') return;
-            
-            const now = audioContext.currentTime;
-            const duration = 0.3;
-            
-            // Create noise for hairdryer effect
-            const bufferSize = audioContext.sampleRate * duration;
-            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-            const data = buffer.getChannelData(0);
-            
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * 0.15;
-            }
-            
-            const noise = audioContext.createBufferSource();
-            noise.buffer = buffer;
-            
-            const filter = audioContext.createBiquadFilter();
-            filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(600, now);
-            filter.Q.value = 0.5;
-            
-            const gain = audioContext.createGain();
-            gain.gain.setValueAtTime(0.06, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
-            
-            noise.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioContext.destination);
-            
-            noise.start();
-            noise.stop(now + duration);
-        }
-
-        function startDryingSound() {
-            if (dryingSoundInterval) clearInterval(dryingSoundInterval);
-            dryingSoundInterval = setInterval(() => {
-                if (cookingPhase === 3) {
-                    playHairdryerSound();
-                }
-            }, 300);
-        }
-
-        function stopDryingSound() {
-            if (dryingSoundInterval) {
-                clearInterval(dryingSoundInterval);
-                dryingSoundInterval = null;
-            }
-        }
-
-        // 🔔 Microwave ding sound!
         function playDingSound() {
             if (!audioContext || audioContext.state !== 'running') return;
             
             const now = audioContext.currentTime;
             
-            // First ding
             const osc1 = audioContext.createOscillator();
             const gain1 = audioContext.createGain();
             osc1.type = 'sine';
             osc1.frequency.setValueAtTime(880, now);
-            osc1.frequency.setValueAtTime(880, now + 0.15);
             gain1.gain.setValueAtTime(0.15, now);
             gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
             osc1.connect(gain1);
@@ -967,12 +1239,10 @@
             osc1.start();
             osc1.stop(now + 0.3);
             
-            // Second ding (higher)
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
             osc2.type = 'sine';
             osc2.frequency.setValueAtTime(1175, now + 0.15);
-            osc2.frequency.setValueAtTime(1175, now + 0.3);
             gain2.gain.setValueAtTime(0.12, now + 0.15);
             gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
             osc2.connect(gain2);
@@ -981,11 +1251,29 @@
             osc2.stop(now + 0.45);
         }
 
+        function playSuccessSound() {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
+            const now = audioContext.currentTime;
+            [660, 880, 1100].forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, now + i * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2 + i * 0.1);
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start(now + i * 0.1);
+                osc.stop(now + 0.2 + i * 0.1);
+            });
+        }
+
         // Calculate properties
-        function calculateProperties() {
-            const s = currentRatios.starch;
-            const g = currentRatios.glycerin;
-            const v = currentRatios.vinegar;
+        function calculateProperties(ratios = currentRatios) {
+            const s = ratios.starch;
+            const g = ratios.glycerin;
+            const v = ratios.vinegar;
             
             const stiffness = Math.min(100, Math.max(0, (s * 1.4) + (v * 0.3) - (g * 0.5)));
             const elasticity = Math.min(100, Math.max(0, (g * 1.6) - (v * 0.4) + (s * 0.1)));
@@ -1032,29 +1320,20 @@
             
             if (g > 50) {
                 explanation = `<strong>💧 High Plasticizer State (${props.plasticizerWt} wt%):</strong><br>
-                <span style="color: #87CEEB;">Glycerin molecules</span> intercalate between starch chains, disrupting hydrogen bonding and increasing free volume. 
-                This reduces the glass transition temperature (Tg) and transforms the material from glassy to rubbery.
+                Glycerin molecules intercalate between starch chains, increasing free volume. 
                 <span style="color: #a8d8ea;">Chain mobility is high • Elongation at break: ${props.elasticity}%</span>`;
             } else if (v > 40) {
                 explanation = `<strong>🍋 Acid Hydrolysis Dominant:</strong><br>
-                Acetic acid catalyzes cleavage of α-1,4 and α-1,6 glycosidic bonds, reducing molecular weight exponentially.
-                Average chain length reduced to ~${props.chainLength} units. Shorter chains = reduced entanglement density.
+                Acetic acid cleaves glycosidic bonds, reducing molecular weight.
                 <span style="color: #ffb3b3;">Material becomes brittle • Tear strength: ${props.tearStrength}%</span>`;
             } else if (s > 60) {
                 explanation = `<strong>🌽 High Crystallinity Matrix (${props.crystallinity}%):</strong><br>
-                Amylose chains align into double-helical crystalline lamellae via extensive hydrogen bonding.
-                These crystalline domains act as physical crosslinks, increasing Young's modulus and tensile strength.
+                Amylose chains align into crystalline lamellae via hydrogen bonding.
                 <span style="color: #FFB6C1;">Semi-crystalline morphology • Stiffness: ${props.stiffness}%</span>`;
-            } else if (s > 40 && g > 30 && v < 20) {
-                explanation = `<strong>✨ Optimal Thermoplastic Starch:</strong><br>
-                Balanced formulation achieves ${props.crystallinity}% crystallinity with ${props.plasticizerWt} wt% plasticizer.
-                Amorphous regions provide flexibility while crystalline domains maintain structural integrity.
-                <span style="color: #d4b8d9;">Ideal balance of strength (${props.stiffness}%) and elasticity (${props.elasticity}%)</span>`;
             } else {
-                explanation = `<strong>🧪 Amorphous Polymer Network:</strong><br>
-                Starch chains exist primarily in random coil conformation with ${props.crystallinity}% crystalline regions.
-                Glycerin (${props.plasticizerWt} wt%) occupies free volume between chains, enabling segmental motion.
-                Moderate mechanical properties • Adjust ratios to optimize.`;
+                explanation = `<strong>✨ Balanced Thermoplastic Starch:</strong><br>
+                ${props.crystallinity}% crystallinity with ${props.plasticizerWt} wt% plasticizer.
+                <span style="color: #d4b8d9;">Strength (${props.stiffness}%) and elasticity (${props.elasticity}%)</span>`;
             }
             
             explanationText.innerHTML = explanation;
@@ -1068,7 +1347,6 @@
             
             const numChains = 4 + Math.floor(currentRatios.starch / 20);
             const numGlycerin = Math.floor(currentRatios.glycerin / 7);
-            const numBranches = Math.floor(currentRatios.starch / 18);
             const numHBonds = Math.floor(props.crystallinity / 2.5);
             
             for (let c = 0; c < numChains; c++) {
@@ -1089,16 +1367,6 @@
                     });
                 }
                 polymerChains.push(chain);
-            }
-            
-            for (let b = 0; b < numBranches; b++) {
-                if (polymerChains.length > 0) {
-                    const chainIdx = Math.floor(Math.random() * polymerChains.length);
-                    const segIdx = Math.floor(polymerChains[chainIdx].length * 0.35 + Math.random() * 0.35);
-                    if (polymerChains[chainIdx][segIdx]) {
-                        branchPoints.push(polymerChains[chainIdx][segIdx]);
-                    }
-                }
             }
             
             for (let g = 0; g < numGlycerin; g++) {
@@ -1135,26 +1403,9 @@
             const stretchAngle = isDragging ? Math.atan2(grabPoint.y, grabPoint.x) : 0;
             
             hydrogenBonds.forEach(bond => {
-                let p1x = bond.p1.x;
-                let p1y = bond.p1.y;
-                let p2x = bond.p2.x;
-                let p2y = bond.p2.y;
-                
-                if (isDragging && !isSnapped) {
-                    const dx = p2x - p1x;
-                    const dy = p2y - p1y;
-                    const angle = Math.atan2(dy, dx);
-                    const stretchFactor = 1 + currentStretch * 0.5;
-                    
-                    if (Math.abs(angle - stretchAngle) < 1.5) {
-                        p2x = p1x + dx * stretchFactor;
-                        p2y = p1y + dy * stretchFactor;
-                    }
-                }
-                
                 molCtx.beginPath();
-                molCtx.moveTo(p1x, p1y);
-                molCtx.lineTo(p2x, p2y);
+                molCtx.moveTo(bond.p1.x, bond.p1.y);
+                molCtx.lineTo(bond.p2.x, bond.p2.y);
                 molCtx.strokeStyle = isSnapped ? '#FFB6C1' : '#DDA0DD';
                 molCtx.lineWidth = isSnapped ? 1 : 2;
                 molCtx.setLineDash([4, 4]);
@@ -1166,26 +1417,10 @@
                 if (chain.length < 2) return;
                 
                 molCtx.beginPath();
-                
-                let firstPoint = { ...chain[0] };
-                if (isDragging && !isSnapped) {
-                    const stretchFactor = 1 + currentStretch * 0.3;
-                    firstPoint.x += Math.cos(stretchAngle) * stretchOffset * (idx % 2 === 0 ? 1 : -1);
-                    firstPoint.y += Math.sin(stretchAngle) * stretchOffset * (idx % 2 === 0 ? 1 : -1);
-                }
-                
-                molCtx.moveTo(firstPoint.x, firstPoint.y);
+                molCtx.moveTo(chain[0].x, chain[0].y);
                 
                 for (let i = 1; i < chain.length; i++) {
-                    let point = { ...chain[i] };
-                    
-                    if (isDragging && !isSnapped) {
-                        const stretchFactor = 1 + currentStretch * 0.3;
-                        point.x += Math.cos(stretchAngle) * stretchOffset * (i % 2 === 0 ? 1 : -0.5);
-                        point.y += Math.sin(stretchAngle) * stretchOffset * (i % 2 === 0 ? 1 : -0.5);
-                    }
-                    
-                    molCtx.lineTo(point.x, point.y);
+                    molCtx.lineTo(chain[i].x, chain[i].y);
                 }
                 
                 const gradient = molCtx.createLinearGradient(30, 50, 300, 200);
@@ -1196,19 +1431,11 @@
                 molCtx.lineWidth = isSnapped ? 3 : 5;
                 molCtx.stroke();
                 
-                chain.forEach((point, i) => {
-                    let x = point.x;
-                    let y = point.y;
-                    
-                    if (isDragging && !isSnapped) {
-                        x += Math.cos(stretchAngle) * stretchOffset * (i % 3 - 1) * 0.5;
-                        y += Math.sin(stretchAngle) * stretchOffset * (i % 3 - 1) * 0.5;
-                    }
-                    
+                chain.forEach((point) => {
                     molCtx.beginPath();
-                    molCtx.arc(x, y, 5, 0, Math.PI * 2);
+                    molCtx.arc(point.x, point.y, 5, 0, Math.PI * 2);
                     
-                    const monomerGradient = molCtx.createRadialGradient(x-2, y-2, 2, x, y, 6);
+                    const monomerGradient = molCtx.createRadialGradient(point.x-2, point.y-2, 2, point.x, point.y, 6);
                     monomerGradient.addColorStop(0, '#FFB6C1');
                     monomerGradient.addColorStop(1, '#FF69B4');
                     
@@ -1217,47 +1444,16 @@
                     molCtx.strokeStyle = '#FF69B4';
                     molCtx.lineWidth = 1.5;
                     molCtx.stroke();
-                    
-                    molCtx.beginPath();
-                    molCtx.arc(x-1, y-1, 1.5, 0, Math.PI * 2);
-                    molCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-                    molCtx.fill();
                 });
-            });
-            
-            branchPoints.forEach(point => {
-                let x = point.x;
-                let y = point.y;
-                
-                if (isDragging && !isSnapped) {
-                    x += Math.cos(stretchAngle) * stretchOffset * 0.5;
-                    y += Math.sin(stretchAngle) * stretchOffset * 0.5;
-                }
-                
-                molCtx.beginPath();
-                molCtx.arc(x, y, 6, 0, Math.PI * 2);
-                molCtx.fillStyle = isSnapped ? '#DDA0DD' : '#FF69B4';
-                molCtx.fill();
-                molCtx.strokeStyle = '#FF1493';
-                molCtx.lineWidth = 2;
-                molCtx.stroke();
             });
             
             glycerinMolecules.forEach((mol, i) => {
                 const floatY = Math.sin(Date.now() / 400 + mol.offset) * 4;
-                let x = mol.x;
-                let y = mol.y + floatY;
-                
-                if (isDragging && !isSnapped) {
-                    const slideFactor = currentStretch * 8;
-                    x += Math.cos(stretchAngle + i) * slideFactor;
-                    y += Math.sin(stretchAngle + i) * slideFactor;
-                }
                 
                 molCtx.beginPath();
-                molCtx.arc(x, y, mol.size, 0, Math.PI * 2);
+                molCtx.arc(mol.x, mol.y + floatY, mol.size, 0, Math.PI * 2);
                 
-                const glycerinGradient = molCtx.createRadialGradient(x-2, y-2, 2, x, y, 8);
+                const glycerinGradient = molCtx.createRadialGradient(mol.x-2, mol.y-2, 2, mol.x, mol.y, 8);
                 glycerinGradient.addColorStop(0, '#87CEEB');
                 glycerinGradient.addColorStop(1, '#4682B4');
                 
@@ -1266,18 +1462,6 @@
                 molCtx.strokeStyle = '#4169E1';
                 molCtx.lineWidth = 2;
                 molCtx.stroke();
-                
-                molCtx.fillStyle = '#ADD8E6';
-                molCtx.beginPath();
-                molCtx.arc(x - 3, y - 3, 2.5, 0, Math.PI * 2);
-                molCtx.arc(x + 3, y - 3, 2.5, 0, Math.PI * 2);
-                molCtx.arc(x, y + 4, 2.5, 0, Math.PI * 2);
-                molCtx.fill();
-                
-                molCtx.beginPath();
-                molCtx.arc(x-1, y-1, 1, 0, Math.PI * 2);
-                molCtx.fillStyle = 'white';
-                molCtx.fill();
             });
             
             if (isSnapped) {
@@ -1285,8 +1469,6 @@
                 molCtx.moveTo(80, 60);
                 molCtx.lineTo(150, 120);
                 molCtx.lineTo(200, 80);
-                molCtx.moveTo(180, 150);
-                molCtx.lineTo(250, 180);
                 molCtx.strokeStyle = '#FFB6C1';
                 molCtx.lineWidth = 3;
                 molCtx.setLineDash([8, 6]);
@@ -1297,7 +1479,6 @@
 
         function drawBowl() {
             ctx.save();
-            
             ctx.shadowColor = 'rgba(213, 184, 255, 0.3)';
             ctx.shadowBlur = 20;
             ctx.shadowOffsetY = 5;
@@ -1320,147 +1501,6 @@
             
             ctx.shadowBlur = 0;
             ctx.shadowOffsetY = 0;
-            
-            ctx.restore();
-        }
-
-        function drawCookingAnimation() {
-            if (!isCooking) return;
-            
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2 + 25;
-            
-            ctx.save();
-            
-            if (cookingPhase === 1) {
-                // Enhanced pouring animation!
-                const time = Date.now() / 200;
-                const pourOffset = Math.sin(time) * 10;
-                
-                // Liquid stream from pitcher
-                ctx.beginPath();
-                ctx.moveTo(centerX - 100, 30);
-                ctx.lineTo(centerX - 70 + pourOffset, centerY - 40);
-                ctx.lineTo(centerX - 30 + pourOffset, centerY - 40);
-                ctx.lineTo(centerX - 60, 30);
-                
-                const gradient = ctx.createLinearGradient(centerX - 100, 30, centerX - 50, centerY - 20);
-                gradient.addColorStop(0, `rgba(255, 240, 200, 0.8)`);
-                gradient.addColorStop(0.5, `rgba(200, 230, 255, 0.6)`);
-                gradient.addColorStop(1, `rgba(213, 184, 255, 0.5)`);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                
-                // Pitcher
-                ctx.beginPath();
-                ctx.rect(centerX - 120, 10, 50, 40);
-                ctx.fillStyle = '#e8d5e0';
-                ctx.fill();
-                ctx.strokeStyle = '#d4c4d9';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // Splash drops
-                for (let i = 0; i < 8; i++) {
-                    const splashX = centerX - 50 + i * 12 + Math.sin(time + i) * 8;
-                    const splashY = centerY - 30 + Math.cos(time * 1.5 + i) * 12;
-                    ctx.beginPath();
-                    ctx.arc(splashX, splashY, 3 + i % 3, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(200, 230, 255, ${0.4 + Math.sin(time + i) * 0.2})`;
-                    ctx.fill();
-                }
-                
-                // Liquid accumulating in bowl
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY - 5, 70 + Math.sin(time) * 10, 30, 0, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(245, 235, 220, 0.6)`;
-                ctx.fill();
-                
-                puckStatus.innerHTML = '💧 Pouring ingredients... (glug glug)';
-            }
-            
-            if (cookingPhase === 2) {
-                const mixAngle = Date.now() / 200;
-                
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY - 5, 95, 42, 0, 0, Math.PI * 2);
-                const mixtureColor = `rgb(${245 + currentRatios.vinegar/2}, ${235 - currentRatios.starch/4}, ${245})`;
-                ctx.fillStyle = mixtureColor;
-                ctx.globalAlpha = 0.7;
-                ctx.fill();
-                ctx.globalAlpha = 1;
-                
-                ctx.translate(centerX, centerY - 20);
-                ctx.rotate(Math.sin(mixAngle) * 0.5);
-                
-                ctx.beginPath();
-                ctx.rect(-4, -60, 8, 80);
-                ctx.fillStyle = '#d4c4d9';
-                ctx.fill();
-                
-                ctx.beginPath();
-                ctx.ellipse(0, 20, 25, 10, 0, 0, Math.PI * 2);
-                ctx.fillStyle = '#c4b4c9';
-                ctx.fill();
-                
-                ctx.restore();
-                
-                for (let i = 0; i < 10; i++) {
-                    const bubbleX = centerX - 40 + (i * 15) + Math.sin(Date.now()/150 + i)*10;
-                    const bubbleY = centerY - 10 - (i * 3) + Math.cos(Date.now()/200 + i)*5;
-                    ctx.beginPath();
-                    ctx.arc(bubbleX, bubbleY, 3 + i%3, 0, Math.PI*2);
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                    ctx.fill();
-                }
-                
-                puckStatus.innerHTML = '🥄 Mixing the magic... (swoosh swoosh)';
-            }
-            
-            if (cookingPhase === 3) {
-                const time = Date.now() / 150;
-                
-                // Hairdryer!
-                ctx.beginPath();
-                ctx.rect(centerX - 150, centerY - 80, 40, 30);
-                ctx.fillStyle = '#ffb3b3';
-                ctx.fill();
-                ctx.strokeStyle = '#ff9999';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // Hairdryer nozzle
-                ctx.beginPath();
-                ctx.rect(centerX - 120, centerY - 75, 20, 20);
-                ctx.fillStyle = '#d4c4d9';
-                ctx.fill();
-                
-                // Heat waves from hairdryer
-                for (let i = 0; i < 8; i++) {
-                    const waveX = centerX - 100 + i * 12 + Math.sin(time + i) * 5;
-                    const waveY = centerY - 65 - i * 3 + Math.cos(time * 1.2 + i) * 4;
-                    
-                    ctx.beginPath();
-                    ctx.moveTo(waveX, waveY);
-                    ctx.lineTo(waveX + 8, waveY - 6);
-                    ctx.lineTo(waveX + 16, waveY);
-                    ctx.strokeStyle = `rgba(255, 200, 150, ${0.4 - i * 0.04})`;
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-                
-                // Drying mixture
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY - 5, 85, 38, 0, 0, Math.PI * 2);
-                const dryColor = `rgb(${235 + currentRatios.vinegar/3}, ${225 - currentRatios.starch/5}, ${235})`;
-                ctx.fillStyle = dryColor;
-                ctx.globalAlpha = 0.8;
-                ctx.fill();
-                ctx.globalAlpha = 1;
-                
-                puckStatus.innerHTML = '💨 Drying with hairdryer... (whoooosh)';
-            }
-            
             ctx.restore();
         }
 
@@ -1494,11 +1534,6 @@
             ctx.strokeStyle = isSnapped ? '#ffb3b3' : 'rgba(255, 255, 255, 0.6)';
             ctx.lineWidth = isSnapped ? 4 : 3;
             ctx.stroke();
-            
-            ctx.beginPath();
-            ctx.roundRect(-PUCK_SIZE/2 + 5, -PUCK_SIZE/2 + 5, PUCK_SIZE/2, PUCK_SIZE/3, 8);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.fill();
             
             if (!isSnapped) {
                 ctx.fillStyle = '#b8a9c4';
@@ -1665,12 +1700,6 @@
             
             puckStatus.innerHTML = '💔 Chain scission! Hydrogen bonds ruptured!';
             puckStatus.style.color = '#ff9999';
-            
-            setTimeout(() => {
-                stretchFill.style.width = '0%';
-                stretchPercent.textContent = '0%';
-                currentStretch = 0;
-            }, 500);
         }
 
         function createPlastic() {
@@ -1698,27 +1727,18 @@
                 await audioContext.resume();
             }
             
-            // Phase 1: Pouring with sound
             cookingPhase = 1;
-            puckStatus.innerHTML = '💧 Pouring ingredients... (glug glug)';
-            startPouringSound();
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            puckStatus.innerHTML = '💧 Pouring ingredients...';
+            await new Promise(resolve => setTimeout(resolve, 2000));
             
-            // Phase 2: Mixing with sound
             cookingPhase = 2;
-            puckStatus.innerHTML = '🥄 Mixing the magic... (swoosh swoosh)';
-            startStirringSound();
-            await new Promise(resolve => setTimeout(resolve, 2800));
-            stopStirringSound();
+            puckStatus.innerHTML = '🥄 Mixing the magic...';
+            await new Promise(resolve => setTimeout(resolve, 2000));
             
-            // Phase 3: Drying with hairdryer sound
             cookingPhase = 3;
-            puckStatus.innerHTML = '💨 Drying with hairdryer... (whoooosh)';
-            startDryingSound();
-            await new Promise(resolve => setTimeout(resolve, 2500));
-            stopDryingSound();
+            puckStatus.innerHTML = '💨 Drying...';
+            await new Promise(resolve => setTimeout(resolve, 1500));
             
-            // Done! Play ding!
             cookingPhase = 0;
             isCooking = false;
             cookBtn.disabled = false;
@@ -1754,17 +1774,171 @@
             updateProperties();
         }
 
+        // GAME FUNCTIONS
+        function updateGameSliderDisplay() {
+            gameStarchValue.textContent = gameStarchSlider.value;
+            gameGlycerinValue.textContent = gameGlycerinSlider.value;
+            gameVinegarValue.textContent = gameVinegarSlider.value;
+        }
+
+        function loadLevel(level) {
+            currentLevel = level;
+            const levelData = levels[level];
+            
+            currentLevelBadge.textContent = levelData.name;
+            contractIcon.textContent = levelData.icon;
+            contractText.textContent = levelData.title;
+            gameHint.textContent = levelData.hint;
+            
+            // Update target properties display
+            const target = levelData.target;
+            targetProperties.innerHTML = `
+                <div class="target-item">
+                    <div class="target-label">Target Stiffness</div>
+                    <div class="target-value">${target.stiffness}%</div>
+                </div>
+                <div class="target-item">
+                    <div class="target-label">Target Elasticity</div>
+                    <div class="target-value">${target.elasticity}%</div>
+                </div>
+                <div class="target-item">
+                    <div class="target-label">Target Tear Strength</div>
+                    <div class="target-value">${target.tearStrength}%</div>
+                </div>
+            `;
+            
+            // Update level buttons
+            document.querySelectorAll('.level-btn').forEach((btn, idx) => {
+                btn.classList.remove('active');
+                if (completedLevels[idx]) {
+                    btn.classList.add('completed');
+                }
+            });
+            document.querySelector(`[data-level="${level}"]`).classList.add('active');
+            
+            // Reset timer
+            timeLeft = 30;
+            gameTimer.textContent = `${timeLeft}s`;
+            
+            // Hide previous result
+            gameResult.style.display = 'none';
+        }
+
+        function startGameTimer() {
+            if (gameTimerInterval) clearInterval(gameTimerInterval);
+            
+            gameTimerInterval = setInterval(() => {
+                timeLeft--;
+                gameTimer.textContent = `${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(gameTimerInterval);
+                    gameTimerInterval = null;
+                    
+                    // Time's up!
+                    gameResult.className = 'game-result fail';
+                    gameResult.innerHTML = `⏰ Time's up! Try again!`;
+                    gameResult.style.display = 'block';
+                    submitContractBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        submitContractBtn.disabled = false;
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        function checkContract() {
+            const ratios = {
+                starch: parseInt(gameStarchSlider.value),
+                glycerin: parseInt(gameGlycerinSlider.value),
+                vinegar: parseInt(gameVinegarSlider.value)
+            };
+            
+            const props = calculateProperties(ratios);
+            const target = levels[currentLevel].target;
+            const tolerance = levels[currentLevel].tolerance;
+            
+            const stiffnessOk = Math.abs(props.stiffness - target.stiffness) <= tolerance;
+            const elasticityOk = Math.abs(props.elasticity - target.elasticity) <= tolerance;
+            const tearOk = Math.abs(props.tearStrength - target.tearStrength) <= tolerance;
+            
+            const success = stiffnessOk && elasticityOk && tearOk;
+            
+            if (gameTimerInterval) {
+                clearInterval(gameTimerInterval);
+                gameTimerInterval = null;
+            }
+            
+            if (success) {
+                completedLevels[currentLevel - 1] = true;
+                
+                gameResult.className = 'game-result success';
+                gameResult.innerHTML = `✅ Contract Complete! Perfect ${levels[currentLevel].title}!`;
+                gameResult.style.display = 'block';
+                
+                playSuccessSound();
+                
+                // Update level button
+                document.querySelector(`[data-level="${currentLevel}"]`).classList.add('completed');
+                
+                // Update main kitchen ratios to match successful recipe
+                starchSlider.value = ratios.starch;
+                glycerinSlider.value = ratios.glycerin;
+                vinegarSlider.value = ratios.vinegar;
+                updateSliderDisplay();
+            } else {
+                gameResult.className = 'game-result fail';
+                
+                let failReasons = [];
+                if (!stiffnessOk) failReasons.push(`Stiffness: ${Math.round(props.stiffness)}% (target: ${target.stiffness}%)`);
+                if (!elasticityOk) failReasons.push(`Elasticity: ${Math.round(props.elasticity)}% (target: ${target.elasticity}%)`);
+                if (!tearOk) failReasons.push(`Tear Strength: ${Math.round(props.tearStrength)}% (target: ${target.tearStrength}%)`);
+                
+                gameResult.innerHTML = `❌ Not quite right!<br><small>${failReasons.join('<br>')}</small>`;
+                gameResult.style.display = 'block';
+            }
+            
+            submitContractBtn.disabled = true;
+            setTimeout(() => {
+                submitContractBtn.disabled = false;
+            }, 2000);
+        }
+
+        function enterGameMode() {
+            gameActive = true;
+            gameOverlay.classList.add('active');
+            
+            // Sync game sliders with main kitchen
+            gameStarchSlider.value = currentRatios.starch;
+            gameGlycerinSlider.value = currentRatios.glycerin;
+            gameVinegarSlider.value = currentRatios.vinegar;
+            updateGameSliderDisplay();
+            
+            loadLevel(currentLevel);
+            
+            initAudio();
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        function exitGameMode() {
+            gameActive = false;
+            gameOverlay.classList.remove('active');
+            
+            if (gameTimerInterval) {
+                clearInterval(gameTimerInterval);
+                gameTimerInterval = null;
+            }
+        }
+
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             ctx.fillStyle = 'rgba(255, 250, 240, 0.3)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             drawBowl();
-            
-            if (isCooking) {
-                drawCookingAnimation();
-            }
             
             if (plasticPuck && !isCooking) {
                 updatePhysics();
@@ -1807,6 +1981,30 @@
         canvas.addEventListener('mouseup', handleMouseUp);
         canvas.addEventListener('mouseleave', handleMouseUp);
         
+        // Game event listeners
+        enterGameBtn.addEventListener('click', enterGameMode);
+        exitGameBtn.addEventListener('click', exitGameMode);
+        
+        gameStarchSlider.addEventListener('input', updateGameSliderDisplay);
+        gameGlycerinSlider.addEventListener('input', updateGameSliderDisplay);
+        gameVinegarSlider.addEventListener('input', updateGameSliderDisplay);
+        
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const level = parseInt(btn.dataset.level);
+                loadLevel(level);
+                gameResult.style.display = 'none';
+                submitContractBtn.disabled = false;
+            });
+        });
+        
+        submitContractBtn.addEventListener('click', () => {
+            if (!gameTimerInterval) {
+                startGameTimer();
+            }
+            checkContract();
+        });
+        
         function handleResize() {
             const container = document.querySelector('.animation-area');
             canvas.width = container.clientWidth - 40;
@@ -1831,7 +2029,7 @@
             animate();
             animateMolecular();
             
-            puckStatus.innerHTML = '🍳 Click "Mix & Bake" to start!';
+            puckStatus.innerHTML = '🍳 Click "Mix & Bake" or try "Contract Mode"!';
         }
 
         init();
