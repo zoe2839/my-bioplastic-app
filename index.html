@@ -69,7 +69,7 @@
             gap: 20px;
         }
 
-        /* INGREDIENTS PANEL - CUTE STYLE */
+        /* INGREDIENTS PANEL */
         .ingredients-panel {
             background: linear-gradient(135deg, rgba(255, 248, 240, 0.9), rgba(255, 245, 245, 0.9));
             border-radius: 35px;
@@ -176,12 +176,7 @@
             font-family: 'Quicksand', sans-serif;
         }
 
-        .molecular-btn {
-            background: linear-gradient(135deg, #a8d8ea, #c5e8f7);
-            margin-top: 8px;
-        }
-
-        .cook-btn:hover, .molecular-btn:hover {
+        .cook-btn:hover {
             transform: scale(1.02);
         }
 
@@ -284,7 +279,7 @@
         .tear-fill { background: #ffd4d4; }
         .bio-fill { background: #d4b8d9; }
 
-        /* MOLECULAR VIEWER - SCIENTIFIC BUT CUTE */
+        /* MOLECULAR VIEWER */
         .molecular-panel {
             background: linear-gradient(135deg, rgba(255, 248, 240, 0.95), rgba(255, 245, 250, 0.95));
             border-radius: 35px;
@@ -446,11 +441,6 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-        }
-
         @media (max-width: 1200px) {
             .main-grid {
                 grid-template-columns: 1fr;
@@ -592,7 +582,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT: MOLECULAR VIEWER - SCIENTIFIC BUT CUTE -->
+            <!-- RIGHT: MOLECULAR VIEWER -->
             <div class="molecular-panel">
                 <div class="molecular-header">
                     <h3>
@@ -603,32 +593,31 @@
                 <canvas id="molecular-canvas"></canvas>
                 
                 <div class="molecular-legend">
-                    <div class="legend-item"><span class="legend-color" style="background: #D2691E;"></span> Starch Chain</div>
-                    <div class="legend-item"><span class="legend-color" style="background: #FF6347;"></span> Branch Point</div>
-                    <div class="legend-item"><span class="legend-color" style="background: #4169E1;"></span> Glycerin 💧</div>
-                    <div class="legend-item"><span class="legend-color" style="background: #FF1493;"></span> H-bonds</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #FFB6C1;"></span> Starch Chains</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #FF69B4;"></span> Branch Points</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #87CEEB;"></span> Glycerin 💧</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #DDA0DD;"></span> H-bonds</div>
                 </div>
                 
                 <div class="molecular-stats">
                     <div class="stat-item">
                         <div class="stat-value" id="crystallinity-pct">25</div>
-                        <div class="stat-label">Crystallinity</div>
+                        <div class="stat-label">Crystallinity %</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value" id="plasticizer-pct">30</div>
-                        <div class="stat-label">Plasticizer</div>
+                        <div class="stat-label">Plasticizer wt%</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value" id="chain-length-stat">850</div>
-                        <div class="stat-label">Chain Length</div>
+                        <div class="stat-label">Avg Chain Length</div>
                     </div>
                 </div>
                 
                 <div class="molecular-explanation" id="molecular-text">
-                    <strong>🧬 Starch Polymer Matrix</strong><br>
+                    <strong>🧬 Polymer Matrix Analysis</strong><br>
                     <span id="explanation-text">
-                        Long starch chains form the structure. Glycerin molecules (blue) nestle between chains, 
-                        letting them slide like a slippery slide! Vinegar snips the chains shorter.
+                        Loading molecular simulation...
                     </span>
                 </div>
             </div>
@@ -639,8 +628,8 @@
 
     <script>
         // ============================================
-        // BIOPLASTICS BAKERY - CUTE + SCIENTIFIC
-        // All the cute animations + accurate molecular view
+        // BIOPLASTICS BAKERY - ENHANCED MOLECULAR VIEW
+        // Cute colors + real-time stretch visualization
         // ============================================
 
         const canvas = document.getElementById('main-canvas');
@@ -682,13 +671,13 @@
         let currentRatios = { starch: 50, glycerin: 45, vinegar: 5 };
         let isCooking = false;
         let cookingPhase = 0;
-        let cookingProgress = 0;
         let plasticPuck = null;
         let isDragging = false;
         let grabPoint = { x: 0, y: 0 };
         let snapThreshold = 180;
         let isSnapped = false;
         let audioContext = null;
+        let currentStretch = 0; // 0 to 1
         
         // Physics
         let puckX = 400, puckY = 250;
@@ -741,7 +730,7 @@
             const tearStrength = Math.min(100, Math.max(0, (s * 1.0) + (g * 0.4) - (v * 0.8)));
             const biodegradability = Math.min(100, Math.max(0, 100 - (g * 0.15) - (v * 0.4)));
             
-            const crystallinity = Math.round(20 + s * 0.5 - g * 0.3);
+            const crystallinity = Math.round(20 + s * 0.5 - g * 0.3 + (v * 0.1));
             const plasticizerWt = Math.round((g / (s + g + 0.1)) * 100);
             const chainLength = Math.round(500 + s * 8 - v * 5);
             
@@ -777,15 +766,36 @@
             const v = currentRatios.vinegar;
             const s = currentRatios.starch;
             
+            let explanation = '';
+            
             if (g > 50) {
-                explanationText.innerHTML = `💧 Glycerin molecules (blue) squeeze between starch chains, acting like tiny ball bearings! This lets chains slide past each other easily. <span style="color: #a8d8ea;">Super stretchy and flexible!</span>`;
+                explanation = `<strong>💧 High Plasticizer State (${props.plasticizerWt} wt%):</strong><br>
+                <span style="color: #87CEEB;">Glycerin molecules</span> intercalate between starch chains, disrupting hydrogen bonding and increasing free volume. 
+                This reduces the glass transition temperature (Tg) and transforms the material from glassy to rubbery.
+                <span style="color: #a8d8ea;">Chain mobility is high • Elongation at break: ${props.elasticity}%</span>`;
             } else if (v > 40) {
-                explanationText.innerHTML = `🍋 Vinegar snips the long starch chains into shorter pieces (like cutting spaghetti!). Shorter chains can't tangle as well. <span style="color: #ffb3b3;">Snaps easily - crispy!</span>`;
+                explanation = `<strong>🍋 Acid Hydrolysis Dominant:</strong><br>
+                Acetic acid catalyzes cleavage of α-1,4 and α-1,6 glycosidic bonds, reducing molecular weight exponentially.
+                Average chain length reduced to ~${props.chainLength} units. Shorter chains = reduced entanglement density.
+                <span style="color: #ffb3b3;">Material becomes brittle • Tear strength: ${props.tearStrength}%</span>`;
             } else if (s > 60) {
-                explanationText.innerHTML = `🌽 Lots of starch means lots of long, strong chains! They line up neatly and stick together with hydrogen bonds (pink dashes). <span style="color: #ffe5b4;">Strong and firm!</span>`;
+                explanation = `<strong>🌽 High Crystallinity Matrix (${props.crystallinity}%):</strong><br>
+                Amylose chains align into double-helical crystalline lamellae via extensive hydrogen bonding.
+                These crystalline domains act as physical crosslinks, increasing Young's modulus and tensile strength.
+                <span style="color: #FFB6C1;">Semi-crystalline morphology • Stiffness: ${props.stiffness}%</span>`;
+            } else if (s > 40 && g > 30 && v < 20) {
+                explanation = `<strong>✨ Optimal Thermoplastic Starch:</strong><br>
+                Balanced formulation achieves ${props.crystallinity}% crystallinity with ${props.plasticizerWt} wt% plasticizer.
+                Amorphous regions provide flexibility while crystalline domains maintain structural integrity.
+                <span style="color: #d4b8d9;">Ideal balance of strength (${props.stiffness}%) and elasticity (${props.elasticity}%)</span>`;
             } else {
-                explanationText.innerHTML = `🧪 A balanced recipe! Chains are long enough to tangle, and glycerin adds just enough slip. <span style="color: #d4b8d9;">Good strength AND flexibility!</span>`;
+                explanation = `<strong>🧪 Amorphous Polymer Network:</strong><br>
+                Starch chains exist primarily in random coil conformation with ${props.crystallinity}% crystalline regions.
+                Glycerin (${props.plasticizerWt} wt%) occupies free volume between chains, enabling segmental motion.
+                Moderate mechanical properties • Adjust ratios to optimize.`;
             }
+            
+            explanationText.innerHTML = explanation;
         }
 
         function generateMolecularModel(props) {
@@ -794,26 +804,26 @@
             glycerinMolecules = [];
             hydrogenBonds = [];
             
-            const numChains = 3 + Math.floor(currentRatios.starch / 25);
-            const numGlycerin = Math.floor(currentRatios.glycerin / 8);
-            const numBranches = Math.floor(currentRatios.starch / 20);
-            const numHBonds = Math.floor(props.crystallinity / 3);
+            const numChains = 4 + Math.floor(currentRatios.starch / 20);
+            const numGlycerin = Math.floor(currentRatios.glycerin / 7);
+            const numBranches = Math.floor(currentRatios.starch / 18);
+            const numHBonds = Math.floor(props.crystallinity / 2.5);
             
             // Generate chains
             for (let c = 0; c < numChains; c++) {
                 const chain = [];
-                const startY = 60 + c * 55;
-                const segments = 10 + Math.floor(props.chainLength / 80);
+                const startY = 50 + c * 45;
+                const segments = 12 + Math.floor(props.chainLength / 70);
                 
-                let x = 40;
+                let x = 35;
                 let y = startY;
                 
                 for (let i = 0; i < segments; i++) {
-                    x += 12 + Math.sin(i * 0.5) * 4;
-                    y += Math.sin(i * 0.8 + c) * 8;
+                    x += 11 + Math.sin(i * 0.4 + c) * 5;
+                    y += Math.sin(i * 0.7 + c * 2) * 7;
                     
                     chain.push({
-                        x: Math.min(310, x),
+                        x: Math.min(310, Math.max(30, x)),
                         y: Math.max(40, Math.min(200, y))
                     });
                 }
@@ -824,7 +834,7 @@
             for (let b = 0; b < numBranches; b++) {
                 if (polymerChains.length > 0) {
                     const chainIdx = Math.floor(Math.random() * polymerChains.length);
-                    const segIdx = Math.floor(polymerChains[chainIdx].length * 0.4 + Math.random() * 0.3);
+                    const segIdx = Math.floor(polymerChains[chainIdx].length * 0.35 + Math.random() * 0.35);
                     if (polymerChains[chainIdx][segIdx]) {
                         branchPoints.push(polymerChains[chainIdx][segIdx]);
                     }
@@ -834,9 +844,10 @@
             // Generate glycerin molecules
             for (let g = 0; g < numGlycerin; g++) {
                 glycerinMolecules.push({
-                    x: 50 + Math.random() * 270,
-                    y: 50 + Math.random() * 160,
-                    offset: Math.random() * Math.PI * 2
+                    x: 45 + Math.random() * 270,
+                    y: 45 + Math.random() * 160,
+                    offset: Math.random() * Math.PI * 2,
+                    size: 6
                 });
             }
             
@@ -849,7 +860,10 @@
                         const p1 = polymerChains[c1][Math.floor(Math.random() * polymerChains[c1].length)];
                         const p2 = polymerChains[c2][Math.floor(Math.random() * polymerChains[c2].length)];
                         if (p1 && p2) {
-                            hydrogenBonds.push({ p1, p2 });
+                            const dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+                            if (dist < 50) {
+                                hydrogenBonds.push({ p1, p2 });
+                            }
                         }
                     }
                 }
@@ -859,77 +873,183 @@
         function drawMolecularModel() {
             molCtx.clearRect(0, 0, molCanvas.width, molCanvas.height);
             
+            // Calculate stretch offset for chains
+            const stretchOffset = isDragging ? currentStretch * 15 : 0;
+            const stretchAngle = isDragging ? Math.atan2(grabPoint.y, grabPoint.x) : 0;
+            
             // Draw hydrogen bonds
             hydrogenBonds.forEach(bond => {
+                let p1x = bond.p1.x;
+                let p1y = bond.p1.y;
+                let p2x = bond.p2.x;
+                let p2y = bond.p2.y;
+                
+                // Stretch hydrogen bonds
+                if (isDragging && !isSnapped) {
+                    const dx = p2x - p1x;
+                    const dy = p2y - p1y;
+                    const angle = Math.atan2(dy, dx);
+                    const stretchFactor = 1 + currentStretch * 0.5;
+                    
+                    if (Math.abs(angle - stretchAngle) < 1.5) {
+                        p2x = p1x + dx * stretchFactor;
+                        p2y = p1y + dy * stretchFactor;
+                    }
+                }
+                
                 molCtx.beginPath();
-                molCtx.moveTo(bond.p1.x, bond.p1.y);
-                molCtx.lineTo(bond.p2.x, bond.p2.y);
-                molCtx.strokeStyle = '#FF1493';
-                molCtx.lineWidth = 1.5;
-                molCtx.setLineDash([3, 3]);
+                molCtx.moveTo(p1x, p1y);
+                molCtx.lineTo(p2x, p2y);
+                molCtx.strokeStyle = isSnapped ? '#FFB6C1' : '#DDA0DD';
+                molCtx.lineWidth = isSnapped ? 1 : 2;
+                molCtx.setLineDash([4, 4]);
                 molCtx.stroke();
             });
             molCtx.setLineDash([]);
             
-            // Draw chains
-            polymerChains.forEach(chain => {
+            // Draw chains with cute colors and stretch effect
+            polymerChains.forEach((chain, idx) => {
                 if (chain.length < 2) return;
                 
                 molCtx.beginPath();
-                molCtx.moveTo(chain[0].x, chain[0].y);
-                for (let i = 1; i < chain.length; i++) {
-                    molCtx.lineTo(chain[i].x, chain[i].y);
+                
+                let firstPoint = { ...chain[0] };
+                if (isDragging && !isSnapped) {
+                    const stretchFactor = 1 + currentStretch * 0.3;
+                    firstPoint.x += Math.cos(stretchAngle) * stretchOffset * (idx % 2 === 0 ? 1 : -1);
+                    firstPoint.y += Math.sin(stretchAngle) * stretchOffset * (idx % 2 === 0 ? 1 : -1);
                 }
-                molCtx.strokeStyle = '#D2691E';
-                molCtx.lineWidth = 4;
+                
+                molCtx.moveTo(firstPoint.x, firstPoint.y);
+                
+                for (let i = 1; i < chain.length; i++) {
+                    let point = { ...chain[i] };
+                    
+                    if (isDragging && !isSnapped) {
+                        const stretchFactor = 1 + currentStretch * 0.3;
+                        point.x += Math.cos(stretchAngle) * stretchOffset * (i % 2 === 0 ? 1 : -0.5);
+                        point.y += Math.sin(stretchAngle) * stretchOffset * (i % 2 === 0 ? 1 : -0.5);
+                    }
+                    
+                    molCtx.lineTo(point.x, point.y);
+                }
+                
+                // Cute pink chains!
+                const gradient = molCtx.createLinearGradient(30, 50, 300, 200);
+                gradient.addColorStop(0, '#FFB6C1');
+                gradient.addColorStop(1, '#FFC0CB');
+                
+                molCtx.strokeStyle = isSnapped ? '#DDA0DD' : gradient;
+                molCtx.lineWidth = isSnapped ? 3 : 5;
                 molCtx.stroke();
                 
-                // Draw monomers
-                chain.forEach(point => {
+                // Draw monomers (cute circles)
+                chain.forEach((point, i) => {
+                    let x = point.x;
+                    let y = point.y;
+                    
+                    if (isDragging && !isSnapped) {
+                        x += Math.cos(stretchAngle) * stretchOffset * (i % 3 - 1) * 0.5;
+                        y += Math.sin(stretchAngle) * stretchOffset * (i % 3 - 1) * 0.5;
+                    }
+                    
                     molCtx.beginPath();
-                    molCtx.arc(point.x, point.y, 5, 0, Math.PI * 2);
-                    molCtx.fillStyle = '#DEB887';
+                    molCtx.arc(x, y, 5, 0, Math.PI * 2);
+                    
+                    const monomerGradient = molCtx.createRadialGradient(x-2, y-2, 2, x, y, 6);
+                    monomerGradient.addColorStop(0, '#FFB6C1');
+                    monomerGradient.addColorStop(1, '#FF69B4');
+                    
+                    molCtx.fillStyle = isSnapped ? '#E6E6FA' : monomerGradient;
                     molCtx.fill();
-                    molCtx.strokeStyle = '#D2691E';
+                    molCtx.strokeStyle = '#FF69B4';
                     molCtx.lineWidth = 1.5;
                     molCtx.stroke();
+                    
+                    // Cute little shine
+                    molCtx.beginPath();
+                    molCtx.arc(x-1, y-1, 1.5, 0, Math.PI * 2);
+                    molCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                    molCtx.fill();
                 });
             });
             
             // Draw branch points
             branchPoints.forEach(point => {
+                let x = point.x;
+                let y = point.y;
+                
+                if (isDragging && !isSnapped) {
+                    x += Math.cos(stretchAngle) * stretchOffset * 0.5;
+                    y += Math.sin(stretchAngle) * stretchOffset * 0.5;
+                }
+                
                 molCtx.beginPath();
-                molCtx.arc(point.x, point.y, 6, 0, Math.PI * 2);
-                molCtx.fillStyle = '#FF6347';
+                molCtx.arc(x, y, 6, 0, Math.PI * 2);
+                molCtx.fillStyle = isSnapped ? '#DDA0DD' : '#FF69B4';
                 molCtx.fill();
-                molCtx.strokeStyle = '#FF4500';
+                molCtx.strokeStyle = '#FF1493';
                 molCtx.lineWidth = 2;
                 molCtx.stroke();
             });
             
-            // Draw glycerin molecules
+            // Draw glycerin molecules with stretch effect
             glycerinMolecules.forEach((mol, i) => {
-                const floatY = Math.sin(Date.now() / 500 + mol.offset) * 5;
+                const floatY = Math.sin(Date.now() / 400 + mol.offset) * 4;
+                let x = mol.x;
+                let y = mol.y + floatY;
+                
+                if (isDragging && !isSnapped) {
+                    const slideFactor = currentStretch * 8;
+                    x += Math.cos(stretchAngle + i) * slideFactor;
+                    y += Math.sin(stretchAngle + i) * slideFactor;
+                }
                 
                 molCtx.beginPath();
-                molCtx.arc(mol.x, mol.y + floatY, 7, 0, Math.PI * 2);
-                molCtx.fillStyle = '#4169E1';
+                molCtx.arc(x, y, mol.size, 0, Math.PI * 2);
+                
+                const glycerinGradient = molCtx.createRadialGradient(x-2, y-2, 2, x, y, 8);
+                glycerinGradient.addColorStop(0, '#87CEEB');
+                glycerinGradient.addColorStop(1, '#4682B4');
+                
+                molCtx.fillStyle = glycerinGradient;
                 molCtx.fill();
-                molCtx.strokeStyle = '#2850a0';
+                molCtx.strokeStyle = '#4169E1';
                 molCtx.lineWidth = 2;
                 molCtx.stroke();
                 
-                // Cute little OH groups
-                molCtx.fillStyle = '#87CEEB';
+                // Cute OH groups
+                molCtx.fillStyle = '#ADD8E6';
                 molCtx.beginPath();
-                molCtx.arc(mol.x - 3, mol.y - 3 + floatY, 2.5, 0, Math.PI * 2);
-                molCtx.arc(mol.x + 3, mol.y - 3 + floatY, 2.5, 0, Math.PI * 2);
-                molCtx.arc(mol.x, mol.y + 4 + floatY, 2.5, 0, Math.PI * 2);
+                molCtx.arc(x - 3, y - 3, 2.5, 0, Math.PI * 2);
+                molCtx.arc(x + 3, y - 3, 2.5, 0, Math.PI * 2);
+                molCtx.arc(x, y + 4, 2.5, 0, Math.PI * 2);
+                molCtx.fill();
+                
+                // Sparkle on glycerin
+                molCtx.beginPath();
+                molCtx.arc(x-1, y-1, 1, 0, Math.PI * 2);
+                molCtx.fillStyle = 'white';
                 molCtx.fill();
             });
+            
+            // If snapped, draw crack lines through chains
+            if (isSnapped) {
+                molCtx.beginPath();
+                molCtx.moveTo(80, 60);
+                molCtx.lineTo(150, 120);
+                molCtx.lineTo(200, 80);
+                molCtx.moveTo(180, 150);
+                molCtx.lineTo(250, 180);
+                molCtx.strokeStyle = '#FFB6C1';
+                molCtx.lineWidth = 3;
+                molCtx.setLineDash([8, 6]);
+                molCtx.stroke();
+                molCtx.setLineDash([]);
+            }
         }
 
-        // Draw bowl and animations (CUTE VERSION)
+        // Draw bowl and animations (CUTE VERSION - unchanged)
         function drawBowl() {
             ctx.save();
             
@@ -1186,6 +1306,7 @@
                 isDragging = true;
                 grabPoint.x = dx;
                 grabPoint.y = dy;
+                currentStretch = 0;
                 
                 initAudio();
                 if (audioContext.state === 'suspended') {
@@ -1207,13 +1328,13 @@
             const stretchY = mouseY - grabWorldY;
             const stretchDist = Math.sqrt(stretchX*stretchX + stretchY*stretchY);
             
-            const stretchRatio = Math.min(1, stretchDist / snapThreshold);
-            stretchFill.style.width = (stretchRatio * 100) + '%';
-            stretchPercent.textContent = Math.round(stretchRatio * 100) + '%';
+            currentStretch = Math.min(1, stretchDist / snapThreshold);
+            stretchFill.style.width = (currentStretch * 100) + '%';
+            stretchPercent.textContent = Math.round(currentStretch * 100) + '%';
             
-            if (stretchRatio > 0.8) {
+            if (currentStretch > 0.8) {
                 stretchFill.style.background = 'linear-gradient(90deg, #ffb3b3, #ff9999)';
-            } else if (stretchRatio > 0.5) {
+            } else if (currentStretch > 0.5) {
                 stretchFill.style.background = 'linear-gradient(90deg, #ffd4a8, #ffc4a8)';
             } else {
                 stretchFill.style.background = 'linear-gradient(90deg, #a8e6cf, #a8d8ea)';
@@ -1229,6 +1350,7 @@
 
         function handleMouseUp() {
             isDragging = false;
+            currentStretch = 0;
             
             if (!isSnapped) {
                 stretchFill.style.width = '0%';
@@ -1241,6 +1363,7 @@
             
             isSnapped = true;
             isDragging = false;
+            currentStretch = 1;
             
             if (audioContext && audioContext.state === 'running') {
                 playSnapSound();
@@ -1254,12 +1377,13 @@
             puckVX = (Math.random() - 0.5) * 8;
             puckVY = -5;
             
-            puckStatus.innerHTML = '💔 Oh no! It snapped! Try a gentler recipe';
+            puckStatus.innerHTML = '💔 Chain scission! Hydrogen bonds ruptured!';
             puckStatus.style.color = '#ff9999';
             
             setTimeout(() => {
                 stretchFill.style.width = '0%';
                 stretchPercent.textContent = '0%';
+                currentStretch = 0;
             }, 500);
         }
 
@@ -1271,6 +1395,7 @@
             puckVY = 0;
             puckRotation = 0;
             isSnapped = false;
+            currentStretch = 0;
             puckStatus.innerHTML = '✨ Fresh bioplastic is ready! Grab and stretch gently ✨';
             puckStatus.style.color = '#9b8baa';
         }
@@ -1307,6 +1432,7 @@
                 puckVY = 0;
                 stretchFill.style.width = '0%';
                 stretchPercent.textContent = '0%';
+                currentStretch = 0;
             }
         }
 
@@ -1345,13 +1471,9 @@
         }
 
         function animateMolecular() {
-            if (molecularViewActive) {
-                drawMolecularModel();
-            }
+            drawMolecularModel();
             requestAnimationFrame(animateMolecular);
         }
-
-        let molecularViewActive = true;
 
         CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
             if (w < 2 * r) r = w / 2;
